@@ -1,0 +1,54 @@
+src/App.tsx
+  s_84c2baa3c9b1fd::t_387982988560a2 12,31
+.agents/skills/swell-interview-curation/references/schema.md
+  s_84c2baa3c9b1fd::t_387982988560a2 1-33
+.agents/skills/swell-interview-curation/agents/openai.yaml
+  s_84c2baa3c9b1fd::t_387982988560a2 1-4
+tests/test_curation.py
+  s_84c2baa3c9b1fd::t_387982988560a2 1-58
+README.md
+  s_84c2baa3c9b1fd::t_387982988560a2 7,67,81-90
+src/data/index.ts
+  s_84c2baa3c9b1fd::t_387982988560a2 2-3,5-6,8-18
+src/components/Answer.tsx
+  s_84c2baa3c9b1fd::t_387982988560a2 1,7,13,20-27
+src/pages/Library.tsx
+  s_84c2baa3c9b1fd::t_387982988560a2 6,20
+src/data/questions.json
+  s_84c2baa3c9b1fd::t_387982988560a2 41-42,54-63,89-96,110-111,123-134,148-149,161-168,435-436,447-454,479-490,515-522,547-1580
+src/data/interview-sources.json
+  s_84c2baa3c9b1fd::t_387982988560a2 1-54
+.agents/skills/swell-interview-curation/SKILL.md
+  s_84c2baa3c9b1fd::t_387982988560a2 1-41
+AGENTS.md
+  s_84c2baa3c9b1fd::t_387982988560a2 19-24
+package.json
+  s_84c2baa3c9b1fd::t_387982988560a2 16,21-23
+.agents/skills/swell-interview-curation/scripts/curate.py
+  s_84c2baa3c9b1fd::t_387982988560a2 1-159
+content/curation/2026-11-01-nowcoder.md
+  s_84c2baa3c9b1fd::t_387982988560a2 1-86
+  s_84c2baa3c9b1fd::t_a2d8bcbe48d674 87
+content/curation/updates/2026-11-01-nowcoder.json
+  s_84c2baa3c9b1fd::t_387982988560a2 1-1223
+src/domain/model.ts
+  s_84c2baa3c9b1fd::t_387982988560a2 8-13,15-17
+tests/question-examples.test.mjs
+  s_84c2baa3c9b1fd::t_387982988560a2 1-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "7ec504e2800955ac867594df4e4591b8af5ac101",
+  "prompts": {},
+  "sessions": {
+    "s_84c2baa3c9b1fd": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a194f1-0ed3-7d20-9f9c-7fbad69ca58b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "lang.jiang <lang.jiang@ximalaya.com>"
+    }
+  }
+}
