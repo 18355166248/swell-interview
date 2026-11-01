@@ -1,0 +1,486 @@
+[
+  {
+    "id": "react-key",
+    "topic": "React",
+    "title": "React 为什么需要 key？",
+    "difficulty": "基础",
+    "prompt": "如果列表会插入、删除或重新排序，应该如何选择 key？",
+    "answer": [
+      "key 帮助 React 在同级列表中识别同一项，使更新前后的组件和状态正确对应。它应在兄弟节点间唯一，并在数据生命周期内保持稳定。",
+      "优先使用数据自带的稳定 ID。可能重新排序的列表不宜使用数组索引，也不要在渲染时随机生成 key，否则可能重建组件或使输入状态对应错误。"
+    ],
+    "points": [
+      "key 不会作为普通 prop 传给组件，需要业务 ID 时另行传递。",
+      "key 只需要在同级列表中唯一。"
+    ],
+    "sources": [
+      {
+        "label": "React 官方文档 · Rendering Lists",
+        "url": "https://react.dev/learn/rendering-lists"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "code": "items.map(item => <Row key={item.id} item={item} />)"
+  },
+  {
+    "id": "react-effect",
+    "topic": "React",
+    "title": "useEffect 的依赖与清理如何处理？",
+    "difficulty": "进阶",
+    "prompt": "如何同步外部系统？依赖变化或组件卸载时应该做什么？",
+    "answer": [
+      "useEffect 用于把组件与外部系统保持同步，例如事件订阅、定时器和网络连接。依赖应包含 Effect 内使用的响应式值。",
+      "清理函数负责撤销本次建立的资源。依赖改变时先清理旧 Effect 再执行新 setup，组件卸载时也会清理。"
+    ],
+    "points": [
+      "React 用 Object.is 比较依赖；不要为了“只执行一次”而遗漏真实依赖。",
+      "开发环境 StrictMode 会额外执行一次 setup / cleanup，以检查资源建立与释放是否对称。",
+      "异步请求需避免过期结果覆盖新状态，可取消请求或忽略过期响应。"
+    ],
+    "sources": [
+      {
+        "label": "React 官方文档 · useEffect",
+        "url": "https://react.dev/reference/react/useEffect"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "code": "useEffect(() => {\n  const id = setInterval(tick, 1000);\n  return () => clearInterval(id);\n}, [tick]);"
+  },
+  {
+    "id": "react-memo",
+    "topic": "React",
+    "title": "useMemo 和 useCallback 有什么区别？",
+    "difficulty": "进阶",
+    "prompt": "两者分别缓存什么？什么时候有实际收益？",
+    "answer": [
+      "useMemo 缓存计算结果，useCallback 缓存函数引用。它们都根据依赖是否改变决定是否复用缓存，是性能优化手段。",
+      "昂贵计算、依赖引用稳定性的 memo 子组件或其他 Hook 依赖可能受益。先分析实际渲染成本，避免给简单表达式一律加缓存。"
+    ],
+    "points": [
+      "缓存不能承担程序正确性。",
+      "依赖要完整，否则可能读到旧值。"
+    ],
+    "sources": [
+      {
+        "label": "React 官方文档 · useMemo",
+        "url": "https://react.dev/reference/react/useMemo"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "code": "const visible = useMemo(() => filter(items, query), [items, query]);\nconst onSave = useCallback(() => save(id), [id]);"
+  },
+  {
+    "id": "js-closure",
+    "topic": "JavaScript",
+    "title": "什么是闭包？实际开发中有哪些应用？",
+    "difficulty": "基础",
+    "prompt": "闭包如何访问外部变量？有哪些应用和注意事项？",
+    "answer": [
+      "函数与其创建时的词法环境共同形成闭包。函数即便在外层函数返回后被调用，仍能访问该环境中的绑定。",
+      "常见用途包括封装私有状态、工厂函数和回调。注意长期持有的回调可能延长对象生命周期；不再使用的订阅和定时器应及时释放。"
+    ],
+    "points": [
+      "闭包持有的是词法环境中的绑定，并非自动复制变量快照。",
+      "区分 JavaScript 闭包与 React 渲染中捕获旧值的问题。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Closures",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures"
+      }
+    ],
+    "origin": {
+      "label": "JavaScript Interview Questions · 选题参考",
+      "url": "https://github.com/sudheerj/javascript-interview-questions"
+    },
+    "code": "function createCounter() {\n  let count = 0;\n  return () => ++count;\n}\nconst next = createCounter();\nnext(); // 1"
+  },
+  {
+    "id": "js-event-loop",
+    "topic": "JavaScript",
+    "title": "事件循环、任务与微任务如何协作？",
+    "difficulty": "进阶",
+    "prompt": "浏览器中，为什么下面的 Promise 回调先于计时器回调？",
+    "answer": [
+      "同步代码先在调用栈执行。当前任务结束、调用栈清空后，浏览器会在微任务检查点持续处理微任务队列，再进入后续调度。",
+      "Promise.then 的回调属于微任务，setTimeout 的回调属于任务。因此示例输出依次为 start、microtask、timer。长时间或无限追加微任务会阻塞后续任务与页面更新。"
+    ],
+    "points": [
+      "计时器延迟是可执行的最早时机，并非精确执行时间。",
+      "浏览器与 Node.js 的调度细节需要分别讨论。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Microtask guide",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide"
+      }
+    ],
+    "origin": {
+      "label": "JavaScript Interview Questions · 选题参考",
+      "url": "https://github.com/sudheerj/javascript-interview-questions"
+    },
+    "code": "console.log('start');\nPromise.resolve().then(() => console.log('microtask'));\nsetTimeout(() => console.log('timer'), 0);"
+  },
+  {
+    "id": "js-promise",
+    "topic": "JavaScript",
+    "title": "Promise.all 与 Promise.allSettled 有什么区别？",
+    "difficulty": "进阶",
+    "prompt": "从失败行为、结果顺序和适用场景说明两者差异。",
+    "answer": [
+      "Promise.all 在全部输入兑现后兑现，结果按输入顺序排列；任一输入拒绝就拒绝。该拒绝不会自动取消其他已经启动的异步操作。",
+      "Promise.allSettled 等所有输入都敲定后，返回每项的状态及对应 value 或 reason，适合独立任务的完整结果汇总。"
+    ],
+    "points": [
+      "all 适合结果缺一不可的场景。",
+      "需要取消请求时显式使用 AbortController 等机制。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Promise.all",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all"
+      }
+    ],
+    "origin": {
+      "label": "JavaScript Interview Questions · 选题参考",
+      "url": "https://github.com/sudheerj/javascript-interview-questions"
+    },
+    "code": "const tasks = [fetchProfile(), fetchSettings()];\nconst results = await Promise.allSettled(tasks);"
+  },
+  {
+    "id": "js-prototype",
+    "topic": "JavaScript",
+    "title": "原型链如何完成属性查找？",
+    "difficulty": "基础",
+    "prompt": "实例、构造函数的 prototype 与对象内部原型是什么关系？",
+    "answer": [
+      "访问属性时，先查对象自身，再沿内部原型逐层向上查找，直到找到属性或到达 null。",
+      "使用 new 创建的普通实例，其内部原型通常指向构造函数的 prototype。应通过 Object.getPrototypeOf 等标准方法观察关系。"
+    ],
+    "points": [
+      "自有属性会遮蔽同名原型属性。",
+      "用 Object.hasOwn 区分自身属性与继承属性。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Inheritance and prototype chain",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain"
+      }
+    ],
+    "origin": {
+      "label": "JavaScript Interview Questions · 选题参考",
+      "url": "https://github.com/sudheerj/javascript-interview-questions"
+    }
+  },
+  {
+    "id": "html-semantic",
+    "topic": "HTML",
+    "title": "语义化 HTML 有什么实际价值？",
+    "difficulty": "基础",
+    "prompt": "为什么交互按钮优先使用 button，而不是给 div 添加点击事件？",
+    "answer": [
+      "语义化元素向浏览器和辅助技术表达内容结构及行为。标题、导航、正文与表单使用正确元素，可以提升可理解性和可维护性。",
+      "原生 button 自带键盘交互和按钮语义；使用 div 模拟时必须额外处理焦点、键盘操作和可访问名称，更容易遗漏。"
+    ],
+    "points": [
+      "表单内非提交按钮需设置 type=\"button\"。",
+      "可访问性还需要清晰名称与可见的键盘焦点。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · HTML accessibility",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility/HTML"
+      }
+    ],
+    "origin": {
+      "label": "Front End Interview Handbook · 选题参考",
+      "url": "https://www.frontendinterviewhandbook.com/"
+    }
+  },
+  {
+    "id": "html-script",
+    "topic": "HTML",
+    "title": "script 的 async 和 defer 有什么区别？",
+    "difficulty": "基础",
+    "prompt": "经典外部脚本如何影响 HTML 解析和执行顺序？",
+    "answer": [
+      "普通经典脚本会阻塞解析；defer 并行下载，在文档解析完成后按出现顺序执行，DOMContentLoaded 会等待这些脚本执行完成。",
+      "async 并行下载，就绪后尽快执行，不保证多个脚本间顺序。独立统计脚本可考虑 async，有顺序依赖的脚本通常适合 defer。"
+    ],
+    "points": [
+      "模块脚本默认具有类似 defer 的行为。",
+      "这些差异需区分经典脚本与模块脚本。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · script",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script"
+      }
+    ],
+    "origin": {
+      "label": "Front End Interview Handbook · 选题参考",
+      "url": "https://www.frontendinterviewhandbook.com/"
+    }
+  },
+  {
+    "id": "css-flex",
+    "topic": "CSS",
+    "title": "Flex 布局的主轴与交叉轴如何理解？",
+    "difficulty": "基础",
+    "prompt": "flex-direction、justify-content 和 align-items 分别控制什么？",
+    "answer": [
+      "flex-direction 决定主轴方向，交叉轴与其垂直。justify-content 沿主轴分配剩余空间，align-items 控制项目在交叉轴上的默认对齐。",
+      "项目的大小由 flex-basis、flex-grow、flex-shrink 等共同决定。布局溢出时也要关注默认最小尺寸，必要时给可收缩项目设置 min-width: 0。"
+    ],
+    "points": [
+      "主轴不一定是水平方向。",
+      "多行交叉轴整体分布由 align-content 控制。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Flexbox",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox"
+      }
+    ],
+    "origin": {
+      "label": "Front End Interview Handbook · 选题参考",
+      "url": "https://www.frontendinterviewhandbook.com/"
+    }
+  },
+  {
+    "id": "css-bfc",
+    "topic": "CSS",
+    "title": "什么是 BFC？能解决哪些布局问题？",
+    "difficulty": "进阶",
+    "prompt": "说明块级格式化上下文对浮动、外边距折叠的影响。",
+    "answer": [
+      "BFC 是页面中的一个独立布局环境，其内部布局不会与外部环境直接混合。创建它的方式包括 display: flow-root 等。",
+      "建立 BFC 的容器可以包含内部浮动，隔离内部与外部的外边距折叠。选择创建方式时需要考虑 overflow 裁切等副作用。"
+    ],
+    "points": [
+      "只为包含浮动时，flow-root 的意图通常更明确。",
+      "不是所有相邻外边距都会折叠。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Block formatting context",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Block_formatting_context"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    }
+  },
+  {
+    "id": "vue-ref",
+    "topic": "Vue",
+    "title": "Vue 3 的 ref 和 reactive 如何选择？",
+    "difficulty": "基础",
+    "prompt": "两者支持的数据类型以及解构时的注意事项是什么？",
+    "answer": [
+      "ref 可包装任意值，JavaScript 中一般通过 .value 访问；reactive 面向对象类型，返回响应式代理。",
+      "直接解构 reactive 的原始值属性会失去与源属性的响应式连接，需要时使用 toRefs。模板中的 ref 自动解包也有适用范围。"
+    ],
+    "points": [
+      "reactive 只代理对象类型。",
+      "避免整体替换已被依赖引用的 reactive 对象。"
+    ],
+    "sources": [
+      {
+        "label": "Vue 官方文档 · Reactivity Fundamentals",
+        "url": "https://vuejs.org/guide/essentials/reactivity-fundamentals.html"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    }
+  },
+  {
+    "id": "vue-computed",
+    "topic": "Vue",
+    "title": "computed 和 watch 分别适合什么场景？",
+    "difficulty": "基础",
+    "prompt": "如何区分派生状态和副作用？",
+    "answer": [
+      "computed 适合从已有响应式状态计算派生值，并基于依赖缓存。getter 应尽量保持纯粹。",
+      "watch 适合在数据变化后执行异步请求、持久化等副作用，也可以获取新旧值并安排清理。单纯的数据转换优先使用 computed。"
+    ],
+    "points": [
+      "避免在 computed getter 里修改其他状态。",
+      "异步副作用要处理清理和过期结果。"
+    ],
+    "sources": [
+      {
+        "label": "Vue 官方文档 · Watchers",
+        "url": "https://vuejs.org/guide/essentials/watchers.html"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    }
+  },
+  {
+    "id": "ts-unknown",
+    "topic": "TypeScript",
+    "title": "unknown 与 any 有什么区别？",
+    "difficulty": "基础",
+    "prompt": "处理外部接口返回的未知数据时，为什么更适合使用 unknown？",
+    "answer": [
+      "any 会绕过类型检查，并把不确定性传递到后续操作。unknown 可以接收任意值，但使用前必须先进行类型收窄。",
+      "对外部数据使用 unknown，再通过 typeof、判别字段或运行时校验确认结构，可以保留类型安全边界。"
+    ],
+    "points": [
+      "类型断言不会自动做运行时校验。",
+      "静态类型不能保证服务器实际返回的数据结构。"
+    ],
+    "sources": [
+      {
+        "label": "TypeScript 官方文档 · unknown",
+        "url": "https://www.typescriptlang.org/docs/handbook/2/functions.html#unknown"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "code": "function read(value: unknown) {\n  if (typeof value === 'string') return value.trim();\n  return '';\n}"
+  },
+  {
+    "id": "ts-union",
+    "topic": "TypeScript",
+    "title": "如何用可辨识联合描述请求状态？",
+    "difficulty": "进阶",
+    "prompt": "怎样在成功分支安全访问 data，并避免无意义的字段组合？",
+    "answer": [
+      "使用具有字面量类型的公共字段作为判别标记，让 loading、success、error 各自携带必要字段。",
+      "控制流判断判别字段后，TypeScript 会把联合收窄到对应成员。处理全部分支时可借助 never 检查遗漏。"
+    ],
+    "points": [
+      "将状态和其有效数据放在同一个联合成员中。",
+      "避免用多个互不约束的可选字段表达状态机。"
+    ],
+    "sources": [
+      {
+        "label": "TypeScript 官方文档 · Narrowing",
+        "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "code": "type Result =\n  | { status: 'loading' }\n  | { status: 'success'; data: string[] }\n  | { status: 'error'; message: string };"
+  },
+  {
+    "id": "build-treeshaking",
+    "topic": "工程化",
+    "title": "Tree Shaking 生效需要哪些条件？",
+    "difficulty": "进阶",
+    "prompt": "静态模块结构和副作用声明分别起什么作用？",
+    "answer": [
+      "Tree Shaking 利用模块静态结构识别未使用的导出，再由构建优化移除可安全删除的代码。ES Modules 更利于静态分析。",
+      "模块顶层副作用可能使代码必须保留。sideEffects 需要准确声明，不能为了减小体积错误地标记带有必要初始化或样式导入的模块。"
+    ],
+    "points": [
+      "按需导入不等于一定完成 Tree Shaking。",
+      "使用产物分析确认实际减少的模块。"
+    ],
+    "sources": [
+      {
+        "label": "webpack 官方文档 · Tree Shaking",
+        "url": "https://webpack.js.org/guides/tree-shaking/"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    }
+  },
+  {
+    "id": "build-split",
+    "topic": "工程化",
+    "title": "路由懒加载如何影响首屏性能？",
+    "difficulty": "进阶",
+    "prompt": "动态 import 带来哪些收益和代价？",
+    "answer": [
+      "动态 import 让构建工具把延后使用的功能拆为独立块，减少首屏需要加载与解析的代码。",
+      "拆分也会增加后续请求和加载状态，应围绕路由或真正较重的功能划分边界，并为失败、重试和加载过程提供反馈。"
+    ],
+    "points": [
+      "过度拆分可能增加请求开销。",
+      "结合网络瀑布和产物体积验证收益。"
+    ],
+    "sources": [
+      {
+        "label": "Vite 官方文档 · Async Chunk Loading",
+        "url": "https://vite.dev/guide/features.html#async-chunk-loading-optimization"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    }
+  },
+  {
+    "id": "network-cache",
+    "topic": "网络与浏览器",
+    "title": "强缓存与协商缓存如何协作？",
+    "difficulty": "进阶",
+    "prompt": "Cache-Control、ETag 和 304 分别承担什么角色？",
+    "answer": [
+      "缓存内容仍新鲜时可以直接复用，常由 Cache-Control 的 max-age 等指令决定。需要重新验证时可携带 If-None-Match 或 If-Modified-Since。",
+      "服务器验证资源未改变时返回 304，客户端继续使用已有响应体。no-cache 要求复用前验证；no-store 要求不要存储响应。"
+    ],
+    "points": [
+      "no-cache 不等同于禁止存储。",
+      "浏览器缓存与共享缓存应分别考虑。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · HTTP Caching",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    }
+  },
+  {
+    "id": "network-cors",
+    "topic": "网络与浏览器",
+    "title": "为什么会出现 CORS 预检请求？",
+    "difficulty": "进阶",
+    "prompt": "哪些请求会触发 OPTIONS？服务端应该如何响应？",
+    "answer": [
+      "CORS 是浏览器对跨源读取的控制机制。不满足简单请求条件的跨源请求，通常先发送 OPTIONS 询问允许的来源、方法及请求头。",
+      "服务端需要按实际策略返回允许信息。携带凭据时不能把 Access-Control-Allow-Origin 设置为通配符，应明确允许来源并正确处理凭据。"
+    ],
+    "points": [
+      "预检由浏览器发起。",
+      "CORS 不是服务端身份认证机制。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · CORS",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    }
+  }
+]

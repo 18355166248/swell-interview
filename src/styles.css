@@ -1,0 +1,60 @@
+:root { color-scheme: var(--mantine-color-scheme); }
+body { margin: 0; }
+.sidebar { background: light-dark(#f8f9fc, #1d1e24); border-color: light-dark(#e9ecf2, #34353d); }
+.brand { padding: 25px 10px 27px; }
+.brand h3 { font-size: 25px; letter-spacing: -0.6px; color: light-dark(#121a2b, #f3f4f8); }
+.search-trigger { width: 100%; height: 43px; color: var(--mantine-color-dimmed); font-weight: 400; }
+.primary-nav { min-height: 45px; padding-inline: 15px; border-radius: var(--mantine-radius-sm); }
+.primary-nav .mantine-NavLink-label { font-size: 16px; }
+.topic-nav { padding: 10px 20px 10px 38px; border-radius: var(--mantine-radius-sm); min-height: 41px; }
+.topic-nav .mantine-NavLink-label { font-size: 15px; }
+.page-content { max-width: 1260px; margin: 0 auto; padding: 34px 40px 48px; }
+h1.mantine-Title-root { font-size: 38px; letter-spacing: -0.7px; line-height: 1.35; }
+.status-filter { width: min(100%, 690px); }
+.status-filter .mantine-SegmentedControl-label { padding: 10px 22px; }
+.difficulty-select { width: 122px; }
+.category-select { width: 150px; }
+.question-accordion .mantine-Accordion-item { background: var(--mantine-color-body); border-color: light-dark(#e5e9f1, #383943); }
+.question-accordion .mantine-Accordion-control { min-height: 58px; }
+.question-accordion > .mantine-Accordion-item[data-active] > .mantine-Accordion-control { background: var(--mantine-primary-color-light); color: light-dark(#121a2b, #f3f4f8); }
+.question-accordion .mantine-Accordion-panel { padding-top: 16px; }
+.question-accordion .mantine-Accordion-content { padding: 10px 26px 24px; }
+.answer-text { font-size: var(--reading-size, 16px); line-height: 1.95; }
+.answer .mantine-List-item { font-size: var(--reading-size, 16px); line-height: 1.8; }
+.code-block { padding: 22px; border-radius: var(--mantine-radius-sm); line-height: 1.85; font-size: calc(var(--reading-size, 16px) - 2px); white-space: pre; overflow-x: auto; background: light-dark(#f5f6fa, #25262e); }
+.review-page { min-height: calc(100dvh - 88px); }
+.review-question { font-size: 29px; line-height: 1.5; }
+.recall-space { min-height: 300px; padding-bottom: 12px; flex-grow: 1; }
+.mobile-header { position: sticky; top: 0; z-index: 90; padding: 12px 16px; padding-top: max(12px, env(safe-area-inset-top)); background: var(--mantine-color-body); border-bottom: 1px solid var(--mantine-color-default-border); }
+.mobile-tabs { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; padding: 7px 10px max(7px, env(safe-area-inset-bottom)); background: var(--mantine-color-body); border-top: 1px solid var(--mantine-color-default-border); }
+.mobile-tab { height: 57px; padding: 4px; }
+@media (max-width: 47.99em) {
+  .page-content { padding: 22px 18px 102px; }
+  h1.mantine-Title-root { font-size: 29px; }
+  .status-filter { width: 100%; }
+  .status-filter .mantine-SegmentedControl-label { padding: 9px 3px; font-size: 13px; }
+  .question-accordion .mantine-Accordion-control { padding-inline: 12px; }
+  .question-accordion .mantine-Accordion-content { padding: 10px 14px 18px; }
+  .question-badge { display: none; }
+  .difficulty-select { width: 104px; }
+  .category-select { width: 107px; }
+  .code-block { padding: 14px; }
+  .review-question { font-size: 24px; }
+  .review-page { min-height: calc(100dvh - 180px); }
+  .recall-space { min-height: 180px; }
+}
+@media (max-width: 47.99em) {
+  /* 操作反馈避开底部导航，保证标记题目后仍能立即切换页面。 */
+  .mantine-Notifications-root { bottom: calc(82px + env(safe-area-inset-bottom)) !important; }
+}
+
+.code-block { padding: 0; }
+.code-block .mantine-CodeHighlight-code { font-size: calc(var(--reading-size, 16px) - 1px); line-height: 1.8; }
+.extended-points .mantine-Accordion-control { min-height: 34px; padding: 0; font-size: 14px; }
+.extended-points .mantine-Accordion-label { padding-block: 6px; }
+.extended-points .mantine-Accordion-content { padding: 8px 0; }
+.code-block .hljs { background: transparent; color: inherit; }
+[data-mantine-color-scheme='dark'] .code-block .hljs-keyword { color: var(--mantine-color-red-3); }
+[data-mantine-color-scheme='dark'] .code-block .hljs-title { color: var(--mantine-color-violet-3); }
+[data-mantine-color-scheme='dark'] .code-block .hljs-number { color: var(--mantine-color-blue-3); }
+[data-mantine-color-scheme='dark'] .code-block .hljs-string { color: var(--mantine-color-teal-3); }
