@@ -5,7 +5,16 @@ export const topics = [
 ] as const;
 export type Topic = (typeof topics)[number]['items'][number];
 export type Mastery = 'unseen' | 'review' | 'mastered';
+export interface InterviewSource {
+  id: string; company: string; title: string; url: string; author: string;
+  publishedText: string; publishedAt: string | null; role: string;
+  evidenceLevel: 'author-report'; checkedAt: string; note: string;
+}
+export interface InterviewEvidence { sourceId: string; locator: string }
 export interface Question {
+  // 元数据可选，旧题与学习记录继续使用稳定 ID；面经出处与答案资料分别维护。
+  canonicalKey?: string; aliases?: string[]; interviews?: InterviewEvidence[];
+  review?: { status: 'verified'; checkedAt: string; scope: string };
   id: string; topic: Topic; title: string; difficulty: '基础' | '进阶'; prompt: string;
   answer: string[]; points: string[]; code?: string;
   sources: { label: string; url: string }[];

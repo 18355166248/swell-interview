@@ -13,12 +13,14 @@
     "build:electron": "tsc -p tsconfig.electron.json",
     "desktop": "npm run build:desktop && electron .",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.electron.json --noEmit",
-    "test": "vitest run tests/study.test.ts",
+    "test": "vitest run tests/study.test.ts && npm run test:content",
     "mobile:sync": "npm run build && cap sync",
     "mobile:add:ios": "cap add ios",
     "mobile:add:android": "cap add android",
     "mobile:ios": "cap open ios",
-    "mobile:android": "cap open android"
+    "mobile:android": "cap open android",
+    "curation:check": "python3 .agents/skills/swell-interview-curation/scripts/curate.py --project .",
+    "test:content": "node --test tests/question-examples.test.mjs && python3 -m unittest discover -s tests -p 'test_curation.py'"
   },
   "dependencies": {
     "@capacitor/android": "^7.6.0",

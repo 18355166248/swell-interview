@@ -16,3 +16,9 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - 关键流程、状态转换和异常回退添加简洁中文注释。
 
 - 工程名称为 swell-interview，项目目录为 /Users/xmly/Swell/code/swell-interview。
+
+## 题库维护
+- 更新面经题库时使用 `.agents/skills/swell-interview-curation/SKILL.md`。
+- 公司归属必须关联具体原帖；题源与答案核验来源分开；同知识点保留原 ID。
+- 当前不创建定时更新任务，用户只要求先做好可复用 skill。
+- 入库先跑 `npm run curation:check`，缺少核验的候选保留在当次整理记录，不进入 App 题库。

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Swell 前端面试题整理"
+  short_description: "从真实面经筛选前端题目，核验答案，去重并持续维护项目题库"
+  default_prompt: "使用 $swell-interview-curation 整理字节、阿里、腾讯的前端面试题，核验答案后去重更新 swell-interview 题库。"

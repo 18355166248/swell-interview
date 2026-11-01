@@ -9,7 +9,7 @@ import { useStore, type StudyStore } from './domain/useStore';
 import { Library } from './pages/Library';
 import { Review } from './pages/Review';
 import { Settings } from './pages/Settings';
-import { questions } from './data';
+import { questions, getQuestionSearchText } from './data';
 const destinations = [
   { label: '学习题库', path: '/learn/React', root: '/learn', icon: IconBook },
   { label: '我的收藏', path: '/favorites', root: '/favorites', icon: IconBookmark },
@@ -28,7 +28,7 @@ function Shell({ study }: { study: StudyStore }) {
   useEffect(() => { setDrawer(false); window.scrollTo(0, 0); }, [location.pathname]);
   const topic = decodeURIComponent(location.pathname.split('/')[2] ?? 'React');
   const isLibrary = location.pathname.startsWith('/learn');
-  const matches = search.trim() ? questions.filter(q => `${q.title} ${q.topic} ${q.prompt}`.toLowerCase().includes(search.toLowerCase())).slice(0, 10) : [];
+  const matches = search.trim() ? questions.filter(q => getQuestionSearchText(q).includes(search.toLowerCase())).slice(0, 10) : [];
   const navigation = <>
     <Group gap="sm" className="brand"><ThemeIcon variant="transparent" size={34}><IconBook size={31} stroke={1.8} /></ThemeIcon><Title order={3}>面试拾光</Title></Group>
     <Button className="search-trigger" variant="default" justify="space-between" leftSection={<IconSearch size={17} />} rightSection={<Text size="xs" c="dimmed">⌘ K</Text>} onClick={() => setSearchOpen(true)}>搜索知识点</Button>

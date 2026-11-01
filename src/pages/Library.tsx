@@ -3,7 +3,7 @@ import { useNavigate, useParams, useSearchParams, Link } from 'react-router-dom'
 import { Accordion, Anchor, Badge, Breadcrumbs, Button, Group, NativeSelect, SegmentedControl, Stack, Text, TextInput, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconBookmark, IconBookmarkFilled, IconSearch, IconArrowLeft, IconArrowRight, IconPlayerPlay } from '@tabler/icons-react';
-import { questions } from '../data';
+import { questions, getQuestionSearchText } from '../data';
 import { emptyEntry, type Mastery } from '../domain/model';
 import type { StudyStore } from '../domain/useStore';
 import { Answer } from '../components/Answer';
@@ -17,7 +17,7 @@ export function Library({ study, favorites = false }: { study: StudyStore; favor
   const [difficulty, setDifficulty] = useState('全部难度');
   const [favoriteTopic, setFavoriteTopic] = useState('全部分类');
   const scope = favorites ? questions.filter(q => study.store.progress[q.id]?.favorite && (favoriteTopic === '全部分类' || q.topic === favoriteTopic)) : questions.filter(q => q.topic === topic);
-  const visible = scope.filter(q => (!query || `${q.title} ${q.prompt} ${q.topic}`.toLowerCase().includes(query.toLowerCase())) && (difficulty === '全部难度' || q.difficulty === difficulty) && (filter === 'all' || (study.store.progress[q.id]?.mastery ?? 'unseen') === filter));
+  const visible = scope.filter(q => (!query || getQuestionSearchText(q).includes(query.toLowerCase())) && (difficulty === '全部难度' || q.difficulty === difficulty) && (filter === 'all' || (study.store.progress[q.id]?.mastery ?? 'unseen') === filter));
   const defaultOpen = !favorites && topic === 'React' ? 'react-effect' : '';
   const open = params.get('question') ?? defaultOpen;
   const current = visible.find(q => q.id === open);

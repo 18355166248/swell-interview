@@ -38,7 +38,8 @@
     "points": [
       "React 用 Object.is 比较依赖；不要为了“只执行一次”而遗漏真实依赖。",
       "开发环境 StrictMode 会额外执行一次 setup / cleanup，以检查资源建立与释放是否对称。",
-      "异步请求需避免过期结果覆盖新状态，可取消请求或忽略过期响应。"
+      "异步请求需避免过期结果覆盖新状态，可取消请求或忽略过期响应。",
+      "计数器可使用 setCount(previous => previous + 1) 避免读取定时器闭包中的旧快照；仍需按实际响应式值处理依赖与清理。"
     ],
     "sources": [
       {
@@ -50,7 +51,16 @@
       "label": "前端每日一题 · 选题参考",
       "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
     },
-    "code": "useEffect(() => {\n  const id = setInterval(tick, 1000);\n  return () => clearInterval(id);\n}, [tick]);"
+    "code": "useEffect(() => {\n  const id = setInterval(tick, 1000);\n  return () => clearInterval(id);\n}, [tick]);",
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "React 闭包计数与定时器追问"
+      }
+    ],
+    "aliases": [
+      "定时器里 count 为什么不更新"
+    ]
   },
   {
     "id": "react-memo",
@@ -76,7 +86,14 @@
       "label": "前端每日一题 · 选题参考",
       "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
     },
-    "code": "const visible = useMemo(() => filter(items, query), [items, query]);\nconst onSave = useCallback(() => save(id), [id]);"
+    "code": "const visible = useMemo(() => filter(items, query), [items, query]);\nconst onSave = useCallback(() => save(id), [id]);",
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 34 题：useMemo 与 useCallback"
+      }
+    ],
+    "aliases": []
   },
   {
     "id": "js-closure",
@@ -90,7 +107,8 @@
     ],
     "points": [
       "闭包持有的是词法环境中的绑定，并非自动复制变量快照。",
-      "区分 JavaScript 闭包与 React 渲染中捕获旧值的问题。"
+      "区分 JavaScript 闭包与 React 渲染中捕获旧值的问题。",
+      "变量在栈还是堆属于引擎实现和优化细节；语言层面应先解释词法环境与可达性，避免声称闭包变量总在某个固定物理位置。"
     ],
     "sources": [
       {
@@ -102,7 +120,18 @@
       "label": "JavaScript Interview Questions · 选题参考",
       "url": "https://github.com/sudheerj/javascript-interview-questions"
     },
-    "code": "function createCounter() {\n  let count = 0;\n  return () => ++count;\n}\nconst next = createCounter();\nnext(); // 1"
+    "code": "function createCounter() {\n  let count = 0;\n  return () => ++count;\n}\nconst next = createCounter();\nnext(); // 1",
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 35 题：闭包陷阱"
+      },
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 24—28 题：闭包与环境保留"
+      }
+    ],
+    "aliases": []
   },
   {
     "id": "js-event-loop",
@@ -116,7 +145,8 @@
     ],
     "points": [
       "计时器延迟是可执行的最早时机，并非精确执行时间。",
-      "浏览器与 Node.js 的调度细节需要分别讨论。"
+      "浏览器与 Node.js 的调度细节需要分别讨论。",
+      "任务队列为空不意味着 JS 必须持续忙轮询；浏览器调度由宿主实现，不能把事件循环示意伪代码当真实 CPU 自旋实现。"
     ],
     "sources": [
       {
@@ -128,7 +158,14 @@
       "label": "JavaScript Interview Questions · 选题参考",
       "url": "https://github.com/sudheerj/javascript-interview-questions"
     },
-    "code": "console.log('start');\nPromise.resolve().then(() => console.log('microtask'));\nsetTimeout(() => console.log('timer'), 0);"
+    "code": "console.log('start');\nPromise.resolve().then(() => console.log('microtask'));\nsetTimeout(() => console.log('timer'), 0);",
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 29、30 题：事件循环与空闲调度"
+      }
+    ],
+    "aliases": []
   },
   {
     "id": "js-promise",
@@ -395,7 +432,8 @@
     ],
     "points": [
       "按需导入不等于一定完成 Tree Shaking。",
-      "使用产物分析确认实际减少的模块。"
+      "使用产物分析确认实际减少的模块。",
+      "不要把“原型属性一定无法优化”当规范保证；能否消除取决于静态可分析性、可观察副作用和打包器的具体实现。"
     ],
     "sources": [
       {
@@ -406,7 +444,14 @@
     "origin": {
       "label": "前端每日一题 · 选题参考",
       "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
-    }
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 43—45 题：Tree Shaking、原型与 sideEffects"
+      }
+    ],
+    "aliases": []
   },
   {
     "id": "build-split",
@@ -431,7 +476,18 @@
     "origin": {
       "label": "前端每日一题 · 选题参考",
       "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
-    }
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "电商项目：全部组件懒加载的负面影响"
+      },
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 14、15 题：动态 import 与 chunk"
+      }
+    ],
+    "aliases": []
   },
   {
     "id": "network-cache",
@@ -456,7 +512,14 @@
     "origin": {
       "label": "前端每日一题 · 选题参考",
       "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
-    }
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一、二面：浏览器缓存与详细缓存"
+      }
+    ],
+    "aliases": []
   },
   {
     "id": "network-cors",
@@ -481,6 +544,1039 @@
     "origin": {
       "label": "前端每日一题 · 选题参考",
       "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
-    }
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一、二面：跨域、简单与复杂请求"
+      }
+    ],
+    "aliases": []
+  },
+  {
+    "id": "perf-web-vitals",
+    "canonicalKey": "perf-web-vitals",
+    "topic": "工程化",
+    "title": "如何用 Core Web Vitals 评价并定位页面性能？",
+    "difficulty": "进阶",
+    "prompt": "区分用户体验指标、实验室测量与真实用户数据，并说明优化如何验证。",
+    "answer": [
+      "LCP 衡量加载体验，INP 衡量交互响应，CLS 衡量视觉稳定性。良好阈值分别为 LCP ≤ 2.5 秒、INP ≤ 200 毫秒、CLS ≤ 0.1，通常按真实访问的第 75 百分位评估，并区分移动和桌面。",
+      "先按设备、网络、路由等分组定位，再用性能录制拆分请求等待、主线程长任务、渲染和布局变化。使用同口径前后数据验证，不以单次 Lighthouse 分数代替线上收益。"
+    ],
+    "points": [
+      "FID 已由 INP 取代，不能把旧面经中的指标清单直接当现行 Core Web Vitals。",
+      "优化要说明采样范围与分位数；耗时下降和通过率提升是不同口径。"
+    ],
+    "sources": [
+      {
+        "label": "web.dev · Web Vitals",
+        "url": "https://web.dev/articles/vitals"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "电商项目：性能指标与优化前后对比"
+      },
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 20、21、24 题：性能指标、TTI、长列表"
+      },
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面项目：性能指标"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "perf-fixed-virtual-list",
+    "canonicalKey": "perf-fixed-virtual-list",
+    "topic": "工程化",
+    "title": "固定高度虚拟列表如何计算渲染区间？",
+    "difficulty": "进阶",
+    "prompt": "已知条数 N、行高 h、滚动距离 s、视口高度 v，给出半开区间 [start,end)，解释 overscan。",
+    "answer": [
+      "前提是每行实际高度都等于 h 且 h > 0。先把 s 限制在合法滚动范围，first = floor(s / h)，lastExclusive = ceil((s + v) / h)，再向两侧增加 overscan 并裁到 [0,N]。滚动容器保留 N × h 的总高度，可见内容偏移 start × h。",
+      "overscan 太小会在快速滚动时露白，太大会增加 DOM、布局和绘制成本。不定高列表需要测量高度与前缀和索引，不能直接套固定行高公式；合并单元格还要把跨越可见区的合并关系纳入渲染范围。"
+    ],
+    "points": [
+      "空数据返回 [0,0)；负滚动、滚动到底和末行不足一屏都要测试。",
+      "下面代码仅展示合法固定高度输入下的区间计算，不是生产虚拟列表组件。"
+    ],
+    "sources": [
+      {
+        "label": "web.dev · Virtualize large lists",
+        "url": "https://web.dev/articles/virtualize-long-lists-react-window"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "电商项目：scrollTop、start/end、overscan"
+      },
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 24 题：长列表"
+      },
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 4—7 题：大量数据与合并单元格"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": [],
+    "code": "function range(n, h, s, v, overscan = 2) {\n  if (n === 0) return [0, 0];\n  const top = Math.min(Math.max(0, s), Math.max(0, n * h - v));\n  return [\n    Math.max(0, Math.floor(top / h) - overscan),\n    Math.min(n, Math.ceil((top + v) / h) + overscan)\n  ];\n}"
+  },
+  {
+    "id": "browser-tab-sync",
+    "canonicalKey": "browser-tab-sync",
+    "topic": "网络与浏览器",
+    "title": "多个标签页如何同步购物车变化？",
+    "difficulty": "进阶",
+    "prompt": "比较 storage 事件与 BroadcastChannel，并说明当前标签页和冲突处理。",
+    "answer": [
+      "同源页面可以监听 localStorage 的 storage 事件感知其他页面的写入，但发起写入的页面不会收到自己的事件，当前页面需直接更新状态。sessionStorage 不用于跨独立标签页广播。",
+      "BroadcastChannel 适合在同源、相同存储分区的上下文之间发送消息，但它不替代持久化或服务端一致性。消息携带资源 ID、版本或更新时间；收到通知后按需重新读取服务端，而不是无条件覆盖本地的新状态。"
+    ],
+    "points": [
+      "同源不代表并发写入自动原子化，读改写存在竞争。",
+      "监听器、channel 在页面或组件退出时释放。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · storage event",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event"
+      },
+      {
+        "label": "MDN · BroadcastChannel",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "电商项目：A 标签页购物车变更通知其他标签页"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "render-csr-ssr",
+    "canonicalKey": "render-csr-ssr",
+    "topic": "工程化",
+    "title": "CSR、SSR 与静态生成如何按业务选择？",
+    "difficulty": "进阶",
+    "prompt": "讨论首屏、搜索可见性、交互、服务成本和 hydration，不只比较名词。",
+    "answer": [
+      "CSR 主要由浏览器下载并执行脚本生成界面，适合交互较重的应用；SSR 在服务端生成首批 HTML，可改善内容到达和抓取体验，但会增加服务器工作、缓存和请求隔离的复杂度。",
+      "页面需要客户端交互时还需加载脚本并 hydration。服务端 HTML 与首次客户端渲染应一致。内容更新不频繁时可评估静态生成；流式 SSR 能逐步发送可用内容，但不保证所有业务的指标自动变好。"
+    ],
+    "points": [
+      "SSR 不意味着没有客户端 JavaScript。",
+      "按 LCP、TTFB、交互可用时间与运维成本验证选择，而非一律 SSR。"
+    ],
+    "sources": [
+      {
+        "label": "React · renderToPipeableStream",
+        "url": "https://react.dev/reference/react-dom/server/renderToPipeableStream"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "电商项目：CSR/SSR 适用场景"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "React 服务端渲染；选型部分为工程权衡"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-refresh-singleflight",
+    "canonicalKey": "network-refresh-singleflight",
+    "topic": "网络与浏览器",
+    "title": "多个请求同时返回 401，如何只刷新一次 Token？",
+    "difficulty": "进阶",
+    "prompt": "设计并发合并、过期响应识别、有限重试和刷新失败的处理。",
+    "answer": [
+      "把“是否可刷新”交给真实鉴权协议，不能把所有 401 都视作 Token 过期。在同一客户端实例共享一个 refresh Promise；请求发现自己使用的是旧 Token、而当前 Token 已更新时，直接用当前值重试，避免迟到的 401 再刷新一遍。",
+      "刷新请求绕过普通刷新拦截器；每个原请求最多受控重试一次，成功后重建鉴权信息再发起。失败时所有等待者一同失败并进入明确的重新登录流程。请求取消、无法重放的流式请求体和非幂等写操作需要单独处理。"
+    ],
+    "points": [
+      "Promise 只合并同一运行实例内的刷新；多标签页和多设备需另外协调。",
+      "自动重放写请求需要服务端确认鉴权拒绝前没有业务副作用，或提供幂等协议。"
+    ],
+    "sources": [
+      {
+        "label": "Axios · Interceptors",
+        "url": "https://axios-http.com/docs/interceptors"
+      },
+      {
+        "label": "RFC 9110 · 401 Unauthorized",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-401-unauthorized"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "请求拦截：20 个请求同时返回 401"
+      },
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面：Token 即将过期怎么办"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "客户端协调方案；必须以实际鉴权、刷新与幂等协议为前提"
+    },
+    "aliases": []
+  },
+  {
+    "id": "browser-url-pipeline",
+    "canonicalKey": "browser-url-pipeline",
+    "topic": "网络与浏览器",
+    "title": "输入 URL 到页面可交互，经过哪些关键阶段？",
+    "difficulty": "进阶",
+    "prompt": "串联缓存、连接、文档解析、渲染与脚本，不要求固定串行背诵。",
+    "answer": [
+      "浏览器先处理 URL、导航策略和可用缓存；需要联网时进行域名解析、建立或复用连接，HTTPS 还涉及 TLS，再发送请求并接收响应。缓存命中、连接复用、代理和 Service Worker 都会改变实际路径。",
+      "HTML 解析生成 DOM，CSS 形成样式规则，计算样式后进行布局、绘制及合成。资源下载、增量解析和部分渲染可重叠；脚本可能影响解析和布局。可见并不等于已完成 hydration 或具备良好交互响应。"
+    ],
+    "points": [
+      "HTTP/3 使用 QUIC，不能把所有网络请求都背成 TCP 三次握手。",
+      "用 DevTools 的 Network 和 Performance 验证真实页面瓶颈。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · How browsers work",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/How_browsers_work"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "网络与浏览器：输入 URL 后的完整流程"
+      },
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面：URL 到页面渲染"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-tls13",
+    "canonicalKey": "network-tls13",
+    "topic": "网络与浏览器",
+    "title": "HTTPS 的 TLS 1.3 握手如何建立信任和会话密钥？",
+    "difficulty": "进阶",
+    "prompt": "区分身份认证、密钥协商和应用数据加密，并说明与旧式 RSA 描述的区别。",
+    "answer": [
+      "以常见的证书认证 TLS 1.3 为例，客户端与服务端协商版本、算法及密钥份额，用临时密钥交换派生流量密钥。客户端验证证书链、主机名等，并验证服务端对握手上下文的签名；Finished 校验握手完整性。",
+      "应用数据主要由派生出的对称密钥保护。不要描述成“客户端用公钥加密一个固定会话密钥交给服务器”适用于所有版本；TLS 1.3 已去掉旧式 RSA 密钥传输。恢复会话与 0-RTT 还有独立的条件和重放风险。"
+    ],
+    "points": [
+      "TLS 同时解决传输机密性、完整性和服务端身份认证；它不替代业务鉴权。",
+      "协议版本、会话恢复与证书验证失败应分别讨论。"
+    ],
+    "sources": [
+      {
+        "label": "RFC 8446 · TLS 1.3",
+        "url": "https://www.rfc-editor.org/rfc/rfc8446"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "网络与浏览器：HTTPS 握手"
+      },
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一、二面：HTTPS 与对称/非对称加密"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "TLS 1.3 常见证书认证路径；不覆盖所有恢复与客户端认证变体"
+    },
+    "aliases": []
+  },
+  {
+    "id": "js-arguments",
+    "canonicalKey": "js-arguments",
+    "topic": "JavaScript",
+    "title": "函数形参重新赋值与修改对象属性有什么区别？",
+    "difficulty": "基础",
+    "prompt": "解释为什么函数内改对象属性会影响调用者，但替换形参对象不会替换外部变量。",
+    "answer": [
+      "JavaScript 的实参按值传递。对象值可以理解为指向对象的引用值，这个值会复制给形参；多个绑定因此可能访问同一个对象。",
+      "修改该对象的属性会被其他持有同一对象的代码观察到；给形参重新赋一个新对象，只是改变该形参绑定。基本类型形参的赋值同样不会改写外层变量。"
+    ],
+    "points": [
+      "不要笼统地称为“对象按引用传参”，容易误以为能替换调用者的变量绑定。",
+      "区分变量绑定、引用值与对象本身。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Functions",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "做题第 1 题：changeStuff 的参数与对象属性"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": [],
+    "code": "function update(item) {\n  item.count = 2;\n  item = { count: 3 };\n}\nconst value = { count: 1 };\nupdate(value);\nconsole.log(value.count); // 2"
+  },
+  {
+    "id": "js-new-operator",
+    "canonicalKey": "js-new-operator",
+    "topic": "JavaScript",
+    "title": "如何说明并模拟普通构造函数的 new 过程？",
+    "difficulty": "进阶",
+    "prompt": "处理原型连接、this 绑定、返回对象和返回基本类型的差异。",
+    "answer": [
+      "对普通可构造函数，new 会创建一个对象，使其内部原型通常来自构造函数的 prototype，以该对象作为 this 执行构造逻辑；显式返回对象时采用该对象，否则返回新建对象。",
+      "教学版可用 Object.create 与 Reflect.apply 演示普通函数路径，但它不等价于完整语言语义：class 不能用普通调用执行，箭头函数不可构造，内建对象和 new.target 等也需要专门处理。业务中需要通用构造应使用 Reflect.construct。"
+    ],
+    "points": [
+      "返回 null 或其他基本类型不会替换新建对象，返回函数或对象会。",
+      "不要把教学版标成支持 class、内建构造器的完整 polyfill。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · new",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "做题第 4 题：手动实现 new"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "普通函数构造语义与教学模拟的能力边界"
+    },
+    "aliases": [],
+    "code": "function construct(Ctor, args) {\n  return Reflect.construct(Ctor, args);\n}"
+  },
+  {
+    "id": "js-array-flat",
+    "canonicalKey": "js-array-flat",
+    "topic": "JavaScript",
+    "title": "实现数组扁平化时需要明确哪些边界？",
+    "difficulty": "进阶",
+    "prompt": "说明深度、稀疏数组、不修改输入和循环引用的约束。",
+    "answer": [
+      "先定义是只扁平一层、指定深度还是全部层级。Array.prototype.flat 默认深度为 1，会按展开深度处理稀疏槽位；不会把普通对象也当作数组递归展开。",
+      "手写实现可以递归或使用显式栈，深嵌套应留意调用栈限制，且要保持元素次序与输入数组不变。下面只演示普通有限数组的完全扁平化，不支持循环引用，也不追求 flat 的全部稀疏数组语义。"
+    ],
+    "points": [
+      "不要用 toString().split()，它会损坏类型并混淆空值和字符串逗号。",
+      "测试空数组、null/undefined、不同值类型与深层嵌套。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Array.flat",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "做题第 2 题：数组扁平化"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "普通有限数组完全展开；非完整标准 polyfill"
+    },
+    "aliases": [],
+    "code": "function flatten(input) {\n  const result = [];\n  for (const item of input) {\n    if (Array.isArray(item)) result.push(...flatten(item));\n    else result.push(item);\n  }\n  return result;\n}"
+  },
+  {
+    "id": "js-onion-middleware",
+    "canonicalKey": "js-onion-middleware",
+    "topic": "JavaScript",
+    "title": "洋葱模型为什么要求 await next()？",
+    "difficulty": "进阶",
+    "prompt": "设计异步中间件组合，解释进入/退出顺序和重复调用保护。",
+    "answer": [
+      "每个中间件先执行前置逻辑，再 await 下游链，最后执行后置逻辑。因此正常进入顺序为 A→B→C，返回顺序为 C→B→A。忘记 await 或 return 会让上游提前结束，破坏异常传播和顺序。",
+      "组合器维护下游分发函数，将下一层包成可等待的调用，末尾返回已完成结果。要拦截同一调用链重复执行 next；同步异常转为拒绝，异步失败沿 Promise 链传播。请求拦截可据此分别处理发出前和响应后逻辑。"
+    ],
+    "points": [
+      "业务中优先复用成熟中间件组合器。",
+      "测试下游异常、同步返回、未调用 next 与重复调用 next。"
+    ],
+    "sources": [
+      {
+        "label": "Koa compose · 实现",
+        "url": "https://github.com/koajs/compose/blob/master/index.js"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "做题第 5 题与聊天第 28 题：洋葱模型、请求拦截"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "异步中间件组合原理；具体签名依框架而异"
+    },
+    "aliases": []
+  },
+  {
+    "id": "build-babel-ast",
+    "canonicalKey": "build-babel-ast",
+    "topic": "工程化",
+    "title": "Babel 的解析、转换、生成分别做什么？",
+    "difficulty": "进阶",
+    "prompt": "解释 AST、visitor、source map，以及转语法与补运行时能力的区别。",
+    "answer": [
+      "解析阶段把源码转换成带语法结构的 AST；转换阶段由插件访问、替换或新增节点；生成阶段从结果 AST 输出代码，并可生成 source map。AST 还可用于静态分析、规范检查和代码迁移。",
+      "语法转换与运行时 API 补齐是两件事。把箭头函数转换为普通函数并不自动给环境补上 Promise、Map 等能力；polyfill 和目标环境策略需另外配置，插件顺序与语法版本也会影响结果。"
+    ],
+    "points": [
+      "类型检查并不是 Babel 删除 TypeScript 类型语法时自动完成的。",
+      "举例时明确输入、目标环境和插件配置，避免只背 parse-transform-generate。"
+    ],
+    "sources": [
+      {
+        "label": "Babel · @babel/core",
+        "url": "https://babeljs.io/docs/babel-core"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 15、16、19 题：Babel、插件与 AST"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "hybrid-jsbridge",
+    "canonicalKey": "hybrid-jsbridge",
+    "topic": "工程化",
+    "title": "WebView 中的 JSBridge 如何完成请求与回调？",
+    "difficulty": "进阶",
+    "prompt": "从通道、序列化、请求 ID、权限和生命周期说明 H5 调用原生能力。",
+    "answer": [
+      "桥接机制由宿主向受控页面提供通信通道，消息通常包含方法名、可序列化参数和 requestId；宿主分发到白名单能力，将成功或失败结果带相同 ID 返回，让页面关联 Promise 或回调。",
+      "必须校验消息来源、方法与参数，限制能力范围，处理超时、页面销毁和重复回调。原生登录态不能简单地把长效凭据暴露给任意 H5，应通过明确的可信域、短期凭证或宿主代理协议接入。"
+    ],
+    "points": [
+      "React Native、Android WebView、WKWebView、Electron 的桥接 API 不同，不能互相照搬。",
+      "Electron 应通过 contextIsolation 与窄化的 contextBridge 暴露能力，而不是让渲染页面访问完整 Node API。"
+    ],
+    "sources": [
+      {
+        "label": "Electron · IPC",
+        "url": "https://www.electronjs.org/docs/latest/tutorial/ipc"
+      },
+      {
+        "label": "Electron · contextIsolation",
+        "url": "https://www.electronjs.org/docs/latest/tutorial/context-isolation"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 5—10 题：RN/H5 通信、登录态、Hybrid、JSBridge"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "桥接协议设计思路；Electron 为具体参考，不能推定为 RN 平台 API"
+    },
+    "aliases": []
+  },
+  {
+    "id": "perf-monitoring",
+    "canonicalKey": "perf-monitoring",
+    "topic": "工程化",
+    "title": "如何设计可定位问题的前端监控，而不是只收集报错？",
+    "difficulty": "进阶",
+    "prompt": "涵盖异常、请求、性能、上下文、上报策略和隐私约束。",
+    "answer": [
+      "把脚本异常、未处理 Promise 拒绝、资源失败、请求失败和性能指标分开建模。记录版本、路由、发生时间、脱敏上下文与关联标识；对栈配合匹配版本的 source map，避免只存一条错误消息。",
+      "监听 error 和 unhandledrejection 不能覆盖所有异常：被主动捕获的错误、失败的业务状态码等需在对应边界观测。上报采用采样、聚合和有上限的队列；页面退出阶段可评估 sendBeacon，发送成功不等于服务端已接收入库。"
+    ],
+    "points": [
+      "不要把请求体、Cookie、Token 或个人信息默认写入遥测。",
+      "错误聚合要保留版本及必要上下文，避免把完全不同的问题错误合并。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · error event",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/error_event"
+      },
+      {
+        "label": "MDN · unhandledrejection",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/unhandledrejection_event"
+      },
+      {
+        "label": "MDN · sendBeacon",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 13、14 题：前端监控与埋点 SDK"
+      },
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一面项目：前端埋点"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "工程设计建议；采样、数据口径和服务端接收协议按具体业务定义"
+    },
+    "aliases": []
+  },
+  {
+    "id": "js-memory-leaks",
+    "canonicalKey": "js-memory-leaks",
+    "topic": "JavaScript",
+    "title": "如何区分内存增长与真正的内存泄漏？",
+    "difficulty": "进阶",
+    "prompt": "从可达性、资源生命周期和堆快照说明排查步骤。",
+    "answer": [
+      "垃圾回收关注对象是否仍可达。闭包、事件监听或缓存本身不必然泄漏；问题是业务已不再需要的资源，仍被全局集合、定时器、订阅或脱离文档的 DOM 引用长期持有。",
+      "用可重复的进入/退出操作观察回收后的堆基线，比较快照的对象数量与保留路径，再定位未清理的引用。为缓存加容量和淘汰策略，并使订阅建立与释放对称，避免凭单次峰值判断泄漏。"
+    ],
+    "points": [
+      "清理 EventListener 时必须匹配监听函数与捕获配置。",
+      "WeakMap 适合某些弱关联，不等于能替代所有资源释放。"
+    ],
+    "sources": [
+      {
+        "label": "Chrome DevTools · Memory problems",
+        "url": "https://developer.chrome.com/docs/devtools/memory-problems"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 48、49 题：垃圾回收与内存泄漏"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "security-xss",
+    "canonicalKey": "security-xss",
+    "topic": "网络与浏览器",
+    "title": "XSS 在富文本和流式 Markdown 中如何防范？",
+    "difficulty": "进阶",
+    "prompt": "区分文本展示和 HTML 执行上下文，说明框架转义的边界。",
+    "answer": [
+      "XSS 是不可信内容进入可执行上下文。普通文本应走框架转义；需要渲染富文本时，用维护良好的清洗库按允许列表处理 HTML、属性和 URL 协议，再交给 HTML 渲染入口。",
+      "流式内容同样不可信，不能认为“模型生成的 Markdown”就安全。对 Markdown 插件、原生 HTML、链接及增量渲染边界都要审查。CSP 和 Trusted Types 可提供额外防线，但不能代替正确的上下文处理。"
+    ],
+    "points": [
+      "避免对 HTML 字符串使用简单正则删除 script 的做法。",
+      "把内容转成文本与允许受限富文本，是不同产品需求。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · XSS",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/XSS"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一面：XSS"
+      },
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "流式 Markdown 与 HTML 解析追问"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "security-csrf",
+    "canonicalKey": "security-csrf",
+    "topic": "网络与浏览器",
+    "title": "使用 Cookie 登录时，如何防范 CSRF？",
+    "difficulty": "进阶",
+    "prompt": "解释攻击条件、服务端校验与 SameSite 的能力边界。",
+    "answer": [
+      "当浏览器会自动携带目标站点 Cookie 时，恶意页面可能诱导用户浏览器发出状态变更请求。防护需由服务端校验 CSRF Token、Origin/Referer 或合适的 Fetch Metadata 策略，并为 Cookie 配置合理的 SameSite。",
+      "GET 不应承担状态修改。HttpOnly 限制脚本读取 Cookie，但不能阻止浏览器在跨站请求中自动携带它；SameSite 的 site 与同源的 origin 也不同，因此不能认为一个属性就能覆盖所有威胁。"
+    ],
+    "points": [
+      "CORS 主要控制跨源读取，不应作为通用 CSRF 防护的唯一依据。",
+      "存在 XSS 时，很多 CSRF 防护可被同源脚本绕过，需组合防御。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · CSRF",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/CSRF"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一面、二面：CSRF 与详细防护"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "browser-service-worker",
+    "canonicalKey": "browser-service-worker",
+    "topic": "网络与浏览器",
+    "title": "Service Worker 如何缓存资源，更新时要注意什么？",
+    "difficulty": "进阶",
+    "prompt": "说明生命周期、控制范围、缓存策略及旧版本清理。",
+    "answer": [
+      "Service Worker 运行在独立于页面的工作线程，可在控制范围内处理 fetch 等事件，结合 Cache API 实现离线与缓存策略。它需要安全上下文，不能直接操作 DOM。",
+      "安装、等待、激活和控制页面是不同阶段。新 Worker 并非下载完成就立刻接管所有页面；缓存应版本化，并在合适阶段清理旧缓存。skipWaiting 与 clients.claim 会改变更新时机，需要避免旧页面与新资源混用。"
+    ],
+    "points": [
+      "Cache API 与 HTTP 缓存有不同的管理方式。",
+      "登录接口与个性化数据不能无条件长期缓存。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Using Service Workers",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一面：Service Worker"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-http-versions",
+    "canonicalKey": "network-http-versions",
+    "topic": "网络与浏览器",
+    "title": "HTTP/1.1、HTTP/2、HTTP/3 如何影响请求并发？",
+    "difficulty": "进阶",
+    "prompt": "从连接复用、多路复用和队头阻塞比较，避免绝对化结论。",
+    "answer": [
+      "HTTP/1.1 常通过持久连接复用 TCP，浏览器通常还会建立多条连接。HTTP/2 把多个流的帧交错放在同一连接上，减少应用层串行等待，但共享 TCP 丢包仍可能阻塞所有流的数据交付。",
+      "HTTP/3 使用基于 UDP 的 QUIC，通过独立可靠流减少 TCP 层面的跨流队头阻塞，同时集成 TLS。它并不消除所有等待，仍有拥塞、流控、依赖与服务器处理成本；实际收益取决于网络与部署。"
+    ],
+    "points": [
+      "“HTTP/2 完全没有队头阻塞”不准确。",
+      "HTTP 版本不能单独解释所有资源瀑布，需要同时看优先级、缓存与服务端。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Evolution of HTTP",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Evolution_of_HTTP"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面：http1/2/3"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-websocket",
+    "canonicalKey": "network-websocket",
+    "topic": "网络与浏览器",
+    "title": "WebSocket 和 SSE 的选择及断线恢复如何设计？",
+    "difficulty": "进阶",
+    "prompt": "结合方向、鉴权、重连、消息顺序和流控说明取舍。",
+    "answer": [
+      "WebSocket 提供持续的双向消息通道，适合需要客户端与服务器频繁交互的场景。SSE 主要面向服务器向客户端推送文本事件；原生 EventSource 提供重连等行为，但请求方法和鉴权方式有其约束。",
+      "WebSocket 的重连、心跳和业务消息补偿通常需应用设计。使用消息 ID、序列或确认协议处理恢复与去重；检查 bufferedAmount 及消费速度，不能无限堆积。连接建立成功也不意味着某条业务消息已被对方处理。"
+    ],
+    "points": [
+      "原生 WebSocket API 不提供完整的自动背压机制。",
+      "用 wss 与服务端来源/身份校验保护连接；不要把连接状态当成业务成功回执。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · WebSocket",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSocket"
+      },
+      {
+        "label": "MDN · SSE",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一面项目：WebSocket"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-cookie-session",
+    "canonicalKey": "network-cookie-session",
+    "topic": "网络与浏览器",
+    "title": "Cookie、Session 和 Token 分别承担什么职责？",
+    "difficulty": "基础",
+    "prompt": "说明浏览器存储、自动携带、服务端状态，以及常见安全属性。",
+    "answer": [
+      "Cookie 是浏览器按域、路径和安全策略存储并发送的数据机制；Session 通常表示服务端维护的会话状态，浏览器用会话标识与之关联。Token 是凭证的表示方式，可以有不同格式和校验方式，并不天然等于 JWT。",
+      "Secure、HttpOnly、SameSite 分别影响安全传输、脚本可读性和跨站携带。会话过期、撤销、轮换与跨端共享需要服务端协议；把 Token 放到 localStorage 不会自动获得更高安全性。"
+    ],
+    "points": [
+      "不要把 Session 解释为一种与 Cookie 完全互斥的浏览器存储。",
+      "Cookie 的跨域、跨站和路径范围需要分别分析。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · HTTP cookies",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面：Cookie 与 Session"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-resumable-upload",
+    "canonicalKey": "network-resumable-upload",
+    "topic": "网络与浏览器",
+    "title": "大文件断点续传如何保证恢复与最终完整性？",
+    "difficulty": "进阶",
+    "prompt": "区分上传偏移协议与自定义并发分片协议，说明重试和服务端职责。",
+    "answer": [
+      "先与服务端建立上传会话，用稳定的上传 ID 关联文件和已接收进度。恢复时向服务端查询已确认偏移或分片状态，再上传缺失部分；不能只相信本机记录。tus 是一种基于偏移查询与校验的协议参考。",
+      "自定义并发分片还需定义块编号、大小、校验、幂等写入和最终合并接口。完成必须以服务端完整性检查和确认结果为准；客户端发送完成、回调完成或进度 100% 都不能单独证明文件已正确保存。"
+    ],
+    "points": [
+      "并发度、过期清理、权限校验与取消上传要明确。",
+      "文件指纹用于关联和校验，不应被当成访问授权凭证。"
+    ],
+    "sources": [
+      {
+        "label": "tus · Resumable upload protocol",
+        "url": "https://tus.io/protocols/resumable-upload"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面项目：断点续传"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "协议设计思路；tus 偏移协议与自定义并发分片不可混为同一实现"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-sse-parser",
+    "canonicalKey": "network-sse-parser",
+    "topic": "网络与浏览器",
+    "title": "为什么不能把每个 fetch chunk 直接当作一条 SSE 消息？",
+    "difficulty": "进阶",
+    "prompt": "解释字符解码、行/事件边界和 data 字段处理。",
+    "answer": [
+      "网络块与 UTF-8 字符、SSE 行、完整事件没有一一对应关系。使用流式 TextDecoder 保留跨块字符状态，再以缓冲区持续解析行；空行才结束事件，CRLF、LF、CR 都需要按协议处理。",
+      "多个 data 行以换行拼接，注释行忽略，event、id、retry 各有语义。按完整事件的数据字段再做 JSON 解析；接收流结束也不能把一个未按协议完成的片段直接当成功业务消息。"
+    ],
+    "points": [
+      "优先使用成熟解析器；下面提到的是协议检查点，不是可以直接上线的完整解析器。",
+      "测试把多字节字符、换行和 JSON 拆在任意块边界的情况。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Using SSE",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events"
+      },
+      {
+        "label": "WHATWG · Event stream interpretation",
+        "url": "https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 6.25 腾讯wxg 前端面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/e6fec4c9925d4276a51471f36ede1494"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 9、10 题：SSE 解析与流消费"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "符合 SSE 事件流格式的接口；普通流式 JSON 不是 SSE"
+    },
+    "aliases": []
+  },
+  {
+    "id": "render-streaming-markdown",
+    "canonicalKey": "render-streaming-markdown",
+    "topic": "工程化",
+    "title": "流式 Markdown 如何减少重复渲染并保持结构安全？",
+    "difficulty": "进阶",
+    "prompt": "讨论消息状态、块缓冲、渲染节奏、终止和 HTML 清洗。",
+    "answer": [
+      "把已接收原文、已稳定块和仍在形成的尾块分开管理。对连续小片段合并更新，按一帧或有限时间窗刷新界面；停止时 flush 最后缓冲，并用请求 ID 或会话版本丢弃过期流。",
+      "Markdown 代码围栏、列表和表格会被后文改变语义，应采用解析器支持的增量策略，或保留可重解析尾区。没有通用的“遇到一个换行就证明表格完整”规则；原生 HTML 和链接仍需经过可靠清洗与协议限制。"
+    ],
+    "points": [
+      "这是有多种可行实现的场景题，评价依据是正确性、延迟、复杂度和测试覆盖。",
+      "测试取消后迟到数据、代码块未闭合、表格跨 chunk、恶意 HTML 和慢消费者。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Readable Streams",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams"
+      },
+      {
+        "label": "CommonMark · Specification",
+        "url": "https://spec.commonmark.org/0.31.2/"
+      },
+      {
+        "label": "GFM · Tables",
+        "url": "https://github.github.com/gfm/#tables-extension-"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 6.25 腾讯wxg 前端面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/e6fec4c9925d4276a51471f36ede1494"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 9—13 题：流式 Token、Markdown 表格与 HTML"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "工程建议；Markdown 方言和表格扩展需按实际解析器确定"
+    },
+    "aliases": []
+  },
+  {
+    "id": "vue-list-key",
+    "canonicalKey": "vue-list-key",
+    "topic": "Vue",
+    "title": "Vue 列表为什么需要稳定的 key，而不只是保证不重复？",
+    "difficulty": "基础",
+    "prompt": "解释重排时组件局部状态、表单值和 DOM 复用的关联。",
+    "answer": [
+      "Vue 默认会尽可能就地更新列表节点。稳定的 key 为虚拟节点提供身份，使重排时可以正确复用和移动对应元素或组件状态。key 应采用稳定的业务标识，而不是每次渲染随机生成。",
+      "数组下标随插入、删除和排序改变时，可能让本属于一个条目的组件状态或输入状态被复用到另一个条目。纯静态、无内部状态的列表要具体分析，不能把所有下标 key 都概括成必定出错。"
+    ],
+    "points": [
+      "响应式数据正确更新，并不能补救错误的节点身份设计。",
+      "与 React 的 key 有共同思路，但框架行为与 API 应分别保留。"
+    ],
+    "sources": [
+      {
+        "label": "Vue · Maintaining State with key",
+        "url": "https://vuejs.org/guide/essentials/list.html#maintaining-state-with-key"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 6.25 腾讯wxg 前端面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/e6fec4c9925d4276a51471f36ede1494"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 16—22 题：key、下标、响应式与渲染异常"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "Vue 3 列表渲染"
+    },
+    "aliases": []
   }
 ]

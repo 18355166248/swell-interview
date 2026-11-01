@@ -1,0 +1,54 @@
+[
+  {
+    "id": "nc-byte-8c4af551",
+    "company": "字节跳动",
+    "title": "字节前端一面面经",
+    "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994",
+    "author": "胆小的LOLO在发呆",
+    "publishedText": "10-27 23:30",
+    "publishedAt": null,
+    "role": "前端",
+    "evidenceLevel": "author-report",
+    "checkedAt": "2026-11-01",
+    "note": "页面未显示年份，保留原始日期文本；不是公司官方题库。"
+  },
+  {
+    "id": "nc-ali-400681373596495872",
+    "company": "阿里巴巴",
+    "title": "阿里巴巴前端秋招面经（一面挂）",
+    "url": "https://www.nowcoder.com/discuss/400681373596495872",
+    "author": "灰不会",
+    "publishedText": "2022-09-18 20:10 已编辑",
+    "publishedAt": "2022-09-18",
+    "role": "本地生活 / 饿了么商家端 / 前端",
+    "evidenceLevel": "author-report",
+    "checkedAt": "2026-11-01",
+    "note": "历史原帖，作者记录面试日期为 9 月 16 日；仅保留可迁移知识点，答案按当前资料核对。"
+  },
+  {
+    "id": "nc-tencent-590697274699681792",
+    "company": "腾讯",
+    "title": "腾讯WXG前端面经",
+    "url": "https://www.nowcoder.com/discuss/590697274699681792",
+    "author": "TOBY😈",
+    "publishedText": "2024-02-24 11:58 已编辑",
+    "publishedAt": "2024-02-24",
+    "role": "WXG / 前端",
+    "evidenceLevel": "author-report",
+    "checkedAt": "2026-11-01",
+    "note": "作者自述的一、二面记录；不把网友评论或“真题解析”推荐计作独立来源。"
+  },
+  {
+    "id": "nc-tencent-e6fec4c9",
+    "company": "腾讯",
+    "title": "6.25 腾讯wxg 前端面经",
+    "url": "https://www.nowcoder.com/feed/main/detail/e6fec4c9925d4276a51471f36ede1494",
+    "author": "前端我要入门",
+    "publishedText": "06-25 22:37",
+    "publishedAt": null,
+    "role": "WXG / 前端实习",
+    "evidenceLevel": "author-report",
+    "checkedAt": "2026-11-01",
+    "note": "已登录 Chrome 中阅读全文。原文未显示年份，不推定年份；流式渲染策略是整理后的工程建议，不是唯一标准答案。"
+  }
+]
