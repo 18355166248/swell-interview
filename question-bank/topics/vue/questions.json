@@ -1,0 +1,90 @@
+[
+  {
+    "id": "vue-ref",
+    "topic": "Vue",
+    "title": "Vue 3 的 ref 和 reactive 如何选择？",
+    "difficulty": "基础",
+    "prompt": "两者支持的数据类型以及解构时的注意事项是什么？",
+    "answer": [
+      "ref 可包装任意值，JavaScript 中一般通过 .value 访问；reactive 面向对象类型，返回响应式代理。",
+      "直接解构 reactive 的原始值属性会失去与源属性的响应式连接，需要时使用 toRefs。模板中的 ref 自动解包也有适用范围。"
+    ],
+    "points": [
+      "reactive 只代理对象类型。",
+      "避免整体替换已被依赖引用的 reactive 对象。"
+    ],
+    "sources": [
+      {
+        "label": "Vue 官方文档 · Reactivity Fundamentals",
+        "url": "https://vuejs.org/guide/essentials/reactivity-fundamentals.html"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    }
+  },
+  {
+    "id": "vue-computed",
+    "topic": "Vue",
+    "title": "computed 和 watch 分别适合什么场景？",
+    "difficulty": "基础",
+    "prompt": "如何区分派生状态和副作用？",
+    "answer": [
+      "computed 适合从已有响应式状态计算派生值，并基于依赖缓存。getter 应尽量保持纯粹。",
+      "watch 适合在数据变化后执行异步请求、持久化等副作用，也可以获取新旧值并安排清理。单纯的数据转换优先使用 computed。"
+    ],
+    "points": [
+      "避免在 computed getter 里修改其他状态。",
+      "异步副作用要处理清理和过期结果。"
+    ],
+    "sources": [
+      {
+        "label": "Vue 官方文档 · Watchers",
+        "url": "https://vuejs.org/guide/essentials/watchers.html"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    }
+  },
+  {
+    "id": "vue-list-key",
+    "canonicalKey": "vue-list-key",
+    "topic": "Vue",
+    "title": "Vue 列表为什么需要稳定的 key，而不只是保证不重复？",
+    "difficulty": "基础",
+    "prompt": "解释重排时组件局部状态、表单值和 DOM 复用的关联。",
+    "answer": [
+      "Vue 默认会尽可能就地更新列表节点。稳定的 key 为虚拟节点提供身份，使重排时可以正确复用和移动对应元素或组件状态。key 应采用稳定的业务标识，而不是每次渲染随机生成。",
+      "数组下标随插入、删除和排序改变时，可能让本属于一个条目的组件状态或输入状态被复用到另一个条目。纯静态、无内部状态的列表要具体分析，不能把所有下标 key 都概括成必定出错。"
+    ],
+    "points": [
+      "响应式数据正确更新，并不能补救错误的节点身份设计。",
+      "与 React 的 key 有共同思路，但框架行为与 API 应分别保留。"
+    ],
+    "sources": [
+      {
+        "label": "Vue · Maintaining State with key",
+        "url": "https://vuejs.org/guide/essentials/list.html#maintaining-state-with-key"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 6.25 腾讯wxg 前端面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/e6fec4c9925d4276a51471f36ede1494"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 16—22 题：key、下标、响应式与渲染异常"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "Vue 3 列表渲染"
+    },
+    "aliases": []
+  }
+]

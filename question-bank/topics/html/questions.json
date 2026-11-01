@@ -1,0 +1,149 @@
+[
+  {
+    "id": "html-semantic",
+    "topic": "HTML",
+    "title": "语义化 HTML 有什么实际价值？",
+    "difficulty": "基础",
+    "prompt": "为什么交互按钮优先使用 button，而不是给 div 添加点击事件？",
+    "answer": [
+      "语义化元素向浏览器和辅助技术表达内容结构及行为。标题、导航、正文与表单使用正确元素，可以提升可理解性和可维护性。",
+      "原生 button 自带键盘交互和按钮语义；使用 div 模拟时必须额外处理焦点、键盘操作和可访问名称，更容易遗漏。"
+    ],
+    "points": [
+      "表单内非提交按钮需设置 type=\"button\"。",
+      "可访问性还需要清晰名称与可见的键盘焦点。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · HTML accessibility",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility/HTML"
+      }
+    ],
+    "origin": {
+      "label": "Front End Interview Handbook · 选题参考",
+      "url": "https://www.frontendinterviewhandbook.com/"
+    }
+  },
+  {
+    "id": "html-script",
+    "topic": "HTML",
+    "title": "script 的 async 和 defer 有什么区别？",
+    "difficulty": "基础",
+    "prompt": "经典外部脚本如何影响 HTML 解析和执行顺序？",
+    "answer": [
+      "普通经典脚本会阻塞解析；defer 并行下载，在文档解析完成后按出现顺序执行，DOMContentLoaded 会等待这些脚本执行完成。",
+      "async 并行下载，就绪后尽快执行，不保证多个脚本间顺序。独立统计脚本可考虑 async，有顺序依赖的脚本通常适合 defer。"
+    ],
+    "points": [
+      "模块脚本默认具有类似 defer 的行为。",
+      "这些差异需区分经典脚本与模块脚本。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · script",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script"
+      }
+    ],
+    "origin": {
+      "label": "Front End Interview Handbook · 选题参考",
+      "url": "https://www.frontendinterviewhandbook.com/"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-d3f6b2bb",
+        "locator": "第 4 题：JS 加载和异步加载"
+      }
+    ],
+    "aliases": []
+  },
+  {
+    "id": "dom-event-delegation",
+    "topic": "HTML",
+    "title": "事件冒泡如何支持委托，target 和 currentTarget 有何不同？",
+    "difficulty": "进阶",
+    "prompt": "列表动态新增按钮时，如何在容器统一处理点击并避免匹配到容器外元素？",
+    "answer": [
+      "DOM 事件可经过捕获、目标与冒泡阶段。对会冒泡的事件，在稳定父容器监听一次，再从 target 找到对应业务项；currentTarget 是当前监听器所在节点。点击按钮内部图标时，不能假定 target 就是按钮。",
+      "可在确认 target 为 Element 后用 closest 匹配业务选择器，并检查结果仍在当前容器中。stopPropagation 阻断传播，preventDefault 取消可取消事件的默认行为，两者作用不同；不要为了委托而无条件阻止全局传播。"
+    ],
+    "points": [
+      "并非所有事件都冒泡，focus 等场景需选择合适的事件或捕获阶段。",
+      "Shadow DOM 有重定向与 composed 边界，复杂跨组件委托需要按实际事件路径设计。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Event bubbling",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Event_bubbling"
+      },
+      {
+        "label": "MDN · Event.composed",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Event/composed"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里云前端暑期面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/c4b939986ac44e86afecbf0f6e2dd466"
+    },
+    "canonicalKey": "dom-event-delegation",
+    "aliases": [
+      "事件委托",
+      "捕获和冒泡"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-ali-c4b93998",
+        "locator": "第 10 题：事件冒泡（扩展为委托场景）"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "浏览器原生 DOM 事件；不把框架合成事件等同所有原生细节"
+    }
+  },
+  {
+    "id": "html-resource-hints",
+    "topic": "HTML",
+    "title": "dns-prefetch 与 preconnect 分别提前做什么？",
+    "difficulty": "进阶",
+    "prompt": "牛客原题问 DNS 预解析属性，应写在哪个元素上？是否应给所有域名预连接？",
+    "answer": [
+      "可在 link 元素的 rel 属性使用 dns-prefetch，并以 href 指定目标源，提示浏览器提前解析域名。preconnect 提示提前建立连接，可包含域名解析与连接握手；它不等于下载具体脚本，也不保证浏览器一定执行提示。",
+      "优先对关键、确定会使用的跨源资源建立少量预连接，其他源可评估只做 DNS 预解析。过多提前连接会浪费资源；通过网络瀑布验证收益，并按资源请求的凭证模式正确配置相关跨源属性。"
+    ],
+    "points": [
+      "同源页面一般已有连接，不应把同源预连接当作普遍有效优化。",
+      "preload 预取具体资源，与 dns-prefetch/preconnect 的粒度不同；本题不把三者混为同一功能。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · dns-prefetch",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/dns-prefetch"
+      },
+      {
+        "label": "MDN · preconnect",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel/preconnect"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯前端面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/d3f6b2bb645b4edab5be5254e333a5f6"
+    },
+    "canonicalKey": "html-resource-hints",
+    "aliases": [
+      "DNS 预解析",
+      "预连接优化"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-d3f6b2bb",
+        "locator": "第 5 题：配置 DNS 预解析的属性"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "HTML link 资源提示；效果取决于浏览器与实际连接复用"
+    }
+  }
+]

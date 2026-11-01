@@ -1,0 +1,548 @@
+[
+  {
+    "id": "js-closure",
+    "topic": "JavaScript",
+    "title": "什么是闭包？实际开发中有哪些应用？",
+    "difficulty": "基础",
+    "prompt": "闭包如何访问外部变量？有哪些应用和注意事项？",
+    "answer": [
+      "函数与其创建时的词法环境共同形成闭包。函数即便在外层函数返回后被调用，仍能访问该环境中的绑定。",
+      "常见用途包括封装私有状态、工厂函数和回调。注意长期持有的回调可能延长对象生命周期；不再使用的订阅和定时器应及时释放。"
+    ],
+    "points": [
+      "闭包持有的是词法环境中的绑定，并非自动复制变量快照。",
+      "区分 JavaScript 闭包与 React 渲染中捕获旧值的问题。",
+      "变量在栈还是堆属于引擎实现和优化细节；语言层面应先解释词法环境与可达性，避免声称闭包变量总在某个固定物理位置。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Closures",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures"
+      }
+    ],
+    "origin": {
+      "label": "JavaScript Interview Questions · 选题参考",
+      "url": "https://github.com/sudheerj/javascript-interview-questions"
+    },
+    "code": "function createCounter() {\n  let count = 0;\n  return () => ++count;\n}\nconst next = createCounter();\nnext(); // 1",
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 35 题：闭包陷阱"
+      },
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 24—28 题：闭包与环境保留"
+      }
+    ],
+    "aliases": []
+  },
+  {
+    "id": "js-event-loop",
+    "topic": "JavaScript",
+    "title": "事件循环、任务与微任务如何协作？",
+    "difficulty": "进阶",
+    "prompt": "浏览器中，为什么下面的 Promise 回调先于计时器回调？",
+    "answer": [
+      "同步代码先在调用栈执行。当前任务结束、调用栈清空后，浏览器会在微任务检查点持续处理微任务队列，再进入后续调度。",
+      "Promise.then 的回调属于微任务，setTimeout 的回调属于任务。因此示例输出依次为 start、microtask、timer。长时间或无限追加微任务会阻塞后续任务与页面更新。"
+    ],
+    "points": [
+      "计时器延迟是可执行的最早时机，并非精确执行时间。",
+      "浏览器与 Node.js 的调度细节需要分别讨论。",
+      "任务队列为空不意味着 JS 必须持续忙轮询；浏览器调度由宿主实现，不能把事件循环示意伪代码当真实 CPU 自旋实现。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Microtask guide",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide"
+      }
+    ],
+    "origin": {
+      "label": "JavaScript Interview Questions · 选题参考",
+      "url": "https://github.com/sudheerj/javascript-interview-questions"
+    },
+    "code": "console.log('start');\nPromise.resolve().then(() => console.log('microtask'));\nsetTimeout(() => console.log('timer'), 0);",
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 29、30 题：事件循环与空闲调度"
+      }
+    ],
+    "aliases": []
+  },
+  {
+    "id": "js-promise",
+    "topic": "JavaScript",
+    "title": "Promise.all 与 Promise.allSettled 有什么区别？",
+    "difficulty": "进阶",
+    "prompt": "从失败行为、结果顺序和适用场景说明两者差异。",
+    "answer": [
+      "Promise.all 在全部输入兑现后兑现，结果按输入顺序排列；任一输入拒绝就拒绝。该拒绝不会自动取消其他已经启动的异步操作。",
+      "Promise.allSettled 等所有输入都敲定后，返回每项的状态及对应 value 或 reason，适合独立任务的完整结果汇总。"
+    ],
+    "points": [
+      "all 适合结果缺一不可的场景。",
+      "需要取消请求时显式使用 AbortController 等机制。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Promise.all",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all"
+      }
+    ],
+    "origin": {
+      "label": "JavaScript Interview Questions · 选题参考",
+      "url": "https://github.com/sudheerj/javascript-interview-questions"
+    },
+    "code": "const tasks = [fetchProfile(), fetchSettings()];\nconst results = await Promise.allSettled(tasks);"
+  },
+  {
+    "id": "js-prototype",
+    "topic": "JavaScript",
+    "title": "原型链如何完成属性查找？",
+    "difficulty": "基础",
+    "prompt": "实例、构造函数的 prototype 与对象内部原型是什么关系？",
+    "answer": [
+      "访问属性时，先查对象自身，再沿内部原型逐层向上查找，直到找到属性或到达 null。",
+      "使用 new 创建的普通实例，其内部原型通常指向构造函数的 prototype。应通过 Object.getPrototypeOf 等标准方法观察关系。"
+    ],
+    "points": [
+      "自有属性会遮蔽同名原型属性。",
+      "用 Object.hasOwn 区分自身属性与继承属性。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Inheritance and prototype chain",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain"
+      }
+    ],
+    "origin": {
+      "label": "JavaScript Interview Questions · 选题参考",
+      "url": "https://github.com/sudheerj/javascript-interview-questions"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-2eb00659",
+        "locator": "第 4 题：原型链"
+      }
+    ],
+    "aliases": []
+  },
+  {
+    "id": "js-arguments",
+    "canonicalKey": "js-arguments",
+    "topic": "JavaScript",
+    "title": "函数形参重新赋值与修改对象属性有什么区别？",
+    "difficulty": "基础",
+    "prompt": "解释为什么函数内改对象属性会影响调用者，但替换形参对象不会替换外部变量。",
+    "answer": [
+      "JavaScript 的实参按值传递。对象值可以理解为指向对象的引用值，这个值会复制给形参；多个绑定因此可能访问同一个对象。",
+      "修改该对象的属性会被其他持有同一对象的代码观察到；给形参重新赋一个新对象，只是改变该形参绑定。基本类型形参的赋值同样不会改写外层变量。"
+    ],
+    "points": [
+      "不要笼统地称为“对象按引用传参”，容易误以为能替换调用者的变量绑定。",
+      "区分变量绑定、引用值与对象本身。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Functions",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "做题第 1 题：changeStuff 的参数与对象属性"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": [],
+    "code": "function update(item) {\n  item.count = 2;\n  item = { count: 3 };\n}\nconst value = { count: 1 };\nupdate(value);\nconsole.log(value.count); // 2"
+  },
+  {
+    "id": "js-new-operator",
+    "canonicalKey": "js-new-operator",
+    "topic": "JavaScript",
+    "title": "如何说明并模拟普通构造函数的 new 过程？",
+    "difficulty": "进阶",
+    "prompt": "处理原型连接、this 绑定、返回对象和返回基本类型的差异。",
+    "answer": [
+      "对普通可构造函数，new 会创建一个对象，使其内部原型通常来自构造函数的 prototype，以该对象作为 this 执行构造逻辑；显式返回对象时采用该对象，否则返回新建对象。",
+      "教学版可用 Object.create 与 Reflect.apply 演示普通函数路径，但它不等价于完整语言语义：class 不能用普通调用执行，箭头函数不可构造，内建对象和 new.target 等也需要专门处理。业务中需要通用构造应使用 Reflect.construct。"
+    ],
+    "points": [
+      "返回 null 或其他基本类型不会替换新建对象，返回函数或对象会。",
+      "不要把教学版标成支持 class、内建构造器的完整 polyfill。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · new",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/new"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "做题第 4 题：手动实现 new"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "普通函数构造语义与教学模拟的能力边界"
+    },
+    "aliases": [],
+    "code": "function construct(Ctor, args) {\n  return Reflect.construct(Ctor, args);\n}"
+  },
+  {
+    "id": "js-array-flat",
+    "canonicalKey": "js-array-flat",
+    "topic": "JavaScript",
+    "title": "实现数组扁平化时需要明确哪些边界？",
+    "difficulty": "进阶",
+    "prompt": "说明深度、稀疏数组、不修改输入和循环引用的约束。",
+    "answer": [
+      "先定义是只扁平一层、指定深度还是全部层级。Array.prototype.flat 默认深度为 1，会按展开深度处理稀疏槽位；不会把普通对象也当作数组递归展开。",
+      "手写实现可以递归或使用显式栈，深嵌套应留意调用栈限制，且要保持元素次序与输入数组不变。下面只演示普通有限数组的完全扁平化，不支持循环引用，也不追求 flat 的全部稀疏数组语义。"
+    ],
+    "points": [
+      "不要用 toString().split()，它会损坏类型并混淆空值和字符串逗号。",
+      "测试空数组、null/undefined、不同值类型与深层嵌套。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Array.flat",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "做题第 2 题：数组扁平化"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "普通有限数组完全展开；非完整标准 polyfill"
+    },
+    "aliases": [],
+    "code": "function flatten(input) {\n  const result = [];\n  for (const item of input) {\n    if (Array.isArray(item)) result.push(...flatten(item));\n    else result.push(item);\n  }\n  return result;\n}"
+  },
+  {
+    "id": "js-onion-middleware",
+    "canonicalKey": "js-onion-middleware",
+    "topic": "JavaScript",
+    "title": "洋葱模型为什么要求 await next()？",
+    "difficulty": "进阶",
+    "prompt": "设计异步中间件组合，解释进入/退出顺序和重复调用保护。",
+    "answer": [
+      "每个中间件先执行前置逻辑，再 await 下游链，最后执行后置逻辑。因此正常进入顺序为 A→B→C，返回顺序为 C→B→A。忘记 await 或 return 会让上游提前结束，破坏异常传播和顺序。",
+      "组合器维护下游分发函数，将下一层包成可等待的调用，末尾返回已完成结果。要拦截同一调用链重复执行 next；同步异常转为拒绝，异步失败沿 Promise 链传播。请求拦截可据此分别处理发出前和响应后逻辑。"
+    ],
+    "points": [
+      "业务中优先复用成熟中间件组合器。",
+      "测试下游异常、同步返回、未调用 next 与重复调用 next。"
+    ],
+    "sources": [
+      {
+        "label": "Koa compose · 实现",
+        "url": "https://github.com/koajs/compose/blob/master/index.js"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "做题第 5 题与聊天第 28 题：洋葱模型、请求拦截"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "异步中间件组合原理；具体签名依框架而异"
+    },
+    "aliases": []
+  },
+  {
+    "id": "js-memory-leaks",
+    "canonicalKey": "js-memory-leaks",
+    "topic": "JavaScript",
+    "title": "如何区分内存增长与真正的内存泄漏？",
+    "difficulty": "进阶",
+    "prompt": "从可达性、资源生命周期和堆快照说明排查步骤。",
+    "answer": [
+      "垃圾回收关注对象是否仍可达。闭包、事件监听或缓存本身不必然泄漏；问题是业务已不再需要的资源，仍被全局集合、定时器、订阅或脱离文档的 DOM 引用长期持有。",
+      "用可重复的进入/退出操作观察回收后的堆基线，比较快照的对象数量与保留路径，再定位未清理的引用。为缓存加容量和淘汰策略，并使订阅建立与释放对称，避免凭单次峰值判断泄漏。"
+    ],
+    "points": [
+      "清理 EventListener 时必须匹配监听函数与捕获配置。",
+      "WeakMap 适合某些弱关联，不等于能替代所有资源释放。"
+    ],
+    "sources": [
+      {
+        "label": "Chrome DevTools · Memory problems",
+        "url": "https://developer.chrome.com/docs/devtools/memory-problems"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 48、49 题：垃圾回收与内存泄漏"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "js-async-await",
+    "topic": "JavaScript",
+    "title": "async/await 与 Promise 链如何表达串行、并发和失败？",
+    "difficulty": "进阶",
+    "prompt": "await 是否阻塞主线程？两个互不依赖的请求如何并发并处理失败？",
+    "answer": [
+      "async 函数总是返回 Promise；await 暂停当前 async 函数的后续执行，把控制权交回调用方。await 不把计算密集的同步代码移到其他线程，函数中 await 之前的同步代码仍会立即执行。",
+      "请求互相依赖时依次 await；互不依赖时先启动任务，再用 Promise.all 汇总，或用 allSettled 收集全部结果。try/catch 能捕获被 await 的拒绝；忘记 return/await 的独立 Promise 不在这条错误传播链上。"
+    ],
+    "points": [
+      "all 的失败不会自动取消其他请求；需要时另行设计 AbortSignal 与幂等边界。",
+      "并发任务宜及时建立统一的拒绝处理，避免先启动多个 Promise 再逐个 await 导致未处理拒绝。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · async function",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节飞书前端日常一面",
+      "url": "https://www.nowcoder.com/feed/main/detail/2319e69c4b9443149b97cbc1c815b3b4"
+    },
+    "canonicalKey": "js-async-await",
+    "aliases": [
+      "await 会阻塞主线程吗",
+      "Promise 链和 async await"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-byte-2319e69c",
+        "locator": "八股：Promise 和 async/await 的使用区别"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "ECMAScript Promise 与 async 函数；不等同 Worker 并行"
+    }
+  },
+  {
+    "id": "js-promisify",
+    "topic": "JavaScript",
+    "title": "如何把 error-first 回调函数转换成 Promise 函数？",
+    "difficulty": "进阶",
+    "prompt": "限定最后参数是 (err, value) 回调、一次性结果，如何保留 this 并传播错误？",
+    "answer": [
+      "返回普通函数，在 Promise 执行器中以原调用接收者执行目标函数，并追加回调：err 为真时 reject，否则 resolve(value)。执行器内同步抛错也会成为拒绝；Promise 一旦敲定，后续回调无法改变结果。",
+      "这个教学适配只约定最后一个参数为 error-first 回调、一个成功值，不覆盖事件流、多结果、取消、超时或 util.promisify.custom。Node 环境优先使用自带 Promise API 或 node:util 的 promisify；脱离对象调用时仍要正确绑定接收者。"
+    ],
+    "points": [
+      "不应把本来已返回 Promise 的 API 再 promisify。",
+      "Promise 的忽略重复敲定不代表底层任务自动停止；取消需遵循原 API 协议。"
+    ],
+    "sources": [
+      {
+        "label": "Node.js · util.promisify",
+        "url": "https://nodejs.org/api/util.html#utilpromisifyoriginal"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节飞书前端日常一面",
+      "url": "https://www.nowcoder.com/feed/main/detail/2319e69c4b9443149b97cbc1c815b3b4"
+    },
+    "canonicalKey": "js-promisify",
+    "aliases": [
+      "手写 promisify",
+      "callback 转 Promise"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-byte-2319e69c",
+        "locator": "手写题：promisify"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "普通 error-first、单成功值回调的教学适配；不是 Node 内建函数完整实现"
+    },
+    "code": "function promisifyOne(fn) {\n  return function (...args) {\n    // 普通函数保留调用接收者；箭头包装会意外捕获创建时的 this。\n    return new Promise((resolve, reject) => {\n      fn.call(this, ...args, (err, value) => {\n        if (err) reject(err);\n        else resolve(value);\n      });\n    });\n  };\n}"
+  },
+  {
+    "id": "js-array-reverse",
+    "topic": "JavaScript",
+    "title": "原地反转数组与返回反转副本有哪些边界？",
+    "difficulty": "进阶",
+    "prompt": "手写普通稠密数组的原地反转，说明复杂度；稀疏数组是否等于含 undefined 的数组？",
+    "answer": [
+      "对于普通可写、稠密数组，用左右指针交换元素，时间 O(n)、额外空间 O(1)，修改并返回同一数组。要保持输入不变，可使用支持环境中的 toReversed；不能把原地与不可变两种契约混淆。",
+      "原生 reverse 会移动并保留空槽语义；直接赋值交换会把空槽变成显式 undefined，因此下面例子只支持稠密数组，不是完整 polyfill。冻结数组、访问器或代理的行为也不在教学实现承诺内。"
+    ],
+    "points": [
+      "空数组和单元素数组应直接返回；输入是否可变需在答题前约定。",
+      "不要为解题覆盖 Array.prototype.reverse；优先用独立函数演示。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Array.reverse",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse"
+      },
+      {
+        "label": "MDN · Array.toReversed",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节飞书前端日常一面",
+      "url": "https://www.nowcoder.com/feed/main/detail/2319e69c4b9443149b97cbc1c815b3b4"
+    },
+    "canonicalKey": "js-array-reverse",
+    "aliases": [
+      "手写数组反转",
+      "reverse 与 toReversed"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-byte-2319e69c",
+        "locator": "手写题：array.reverse()"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "普通可写稠密数组教学示例；不支持空槽、访问器和代理"
+    },
+    "code": "function reverseDense(array) {\n  // 只接收普通稠密可写数组，避免把空槽与 undefined 当作同一语义。\n  for (let left = 0, right = array.length - 1; left < right; left++, right--) {\n    const value = array[left];\n    array[left] = array[right];\n    array[right] = value;\n  }\n  return array;\n}"
+  },
+  {
+    "id": "js-this-binding",
+    "topic": "JavaScript",
+    "title": "普通函数与箭头函数的 this 分别由什么决定？",
+    "difficulty": "进阶",
+    "prompt": "说明方法调用、取出方法、call/apply/bind、构造调用和严格模式的差异。",
+    "answer": [
+      "普通函数的 this 主要由调用方式决定：obj.method() 通常以 obj 为接收者；取出函数再直接调用，不会保留 obj。严格模式直接调用的 this 为 undefined；非严格模式会进行替换，不能统一回答成 window。",
+      "call/apply 可指定普通函数调用的接收者，bind 返回绑定函数；用 new 调用可构造的绑定函数时，创建的实例优先于绑定的 this。箭头函数没有自己的 this，读取外层词法 this，不能用 call/bind 改写，也不能作为构造器。"
+    ],
+    "points": [
+      "顶层 this 还受浏览器经典脚本、ES module、Node 模块环境影响。",
+      "对象字面量不是独立的 this 作用域；在对象属性里写箭头不等于绑定到该对象。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · this",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里面经前端一面",
+      "url": "https://www.nowcoder.com/feed/main/detail/2eb0065907554372a60daae26ac21fce"
+    },
+    "canonicalKey": "js-this-binding",
+    "aliases": [
+      "this 指向",
+      "箭头函数绑定 this"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-ali-2eb00659",
+        "locator": "第 5 题：this"
+      },
+      {
+        "sourceId": "nc-ali-c4b93998",
+        "locator": "第 1 题：this 指向问题"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "严格/非严格普通函数与箭头；宿主顶层环境单独说明"
+    }
+  },
+  {
+    "id": "js-deep-clone",
+    "topic": "JavaScript",
+    "title": "深浅拷贝如何选择，循环引用和特殊类型怎么处理？",
+    "difficulty": "进阶",
+    "prompt": "为什么展开运算与 JSON 序列化不能作为通用深拷贝？手写前应约定哪些输入？",
+    "answer": [
+      "对象展开和 Object.assign 只复制一层，嵌套对象仍共享引用。JSON 往返只适合事先约定的 JSON 数据，会丢失或改变某些值，遇到循环引用会失败，不能用作通用克隆器。",
+      "对支持的值优先考虑 structuredClone：能保留循环结构并处理 Date、Map 等，但不能克隆函数和 DOM 节点，也不会完整保留自定义原型链或属性描述符。手写普通对象/数组递归时，用引用映射在递归子节点前登记副本，既终止环也保持共享引用关系。"
+    ],
+    "points": [
+      "先约定数组空槽、Symbol、不可枚举属性、访问器和自定义类；不承诺没有实现的类型。",
+      "transfer 是转移所有权，可能让原 ArrayBuffer 不可用；不是无副作用复制。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · structuredClone",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone"
+      },
+      {
+        "label": "MDN · Structured clone algorithm",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm"
+      },
+      {
+        "label": "MDN · JSON.stringify",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里面经前端一面",
+      "url": "https://www.nowcoder.com/feed/main/detail/2eb0065907554372a60daae26ac21fce"
+    },
+    "canonicalKey": "js-deep-clone",
+    "aliases": [
+      "手写深拷贝",
+      "循环引用 WeakMap"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-ali-2eb00659",
+        "locator": "第 6、7 题：深浅拷贝与多层对象深拷贝"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "普通数据克隆与 structuredClone 支持域；不提供全类型 polyfill"
+    }
+  }
+]

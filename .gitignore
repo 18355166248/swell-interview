@@ -7,3 +7,9 @@ ios/App/Pods/
 android/.gradle/
 android/local.properties
 .smoke-user-data/
+
+__pycache__/
+*.pyc
+
+.ios-device.local.json
+ios/App/build/

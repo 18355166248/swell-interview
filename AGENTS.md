@@ -22,3 +22,9 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - 公司归属必须关联具体原帖；题源与答案核验来源分开；同知识点保留原 ID。
 - 当前不创建定时更新任务，用户只要求先做好可复用 skill。
 - 入库先跑 `npm run curation:check`，缺少核验的候选保留在当次整理记录，不进入 App 题库。
+
+- 面试题、题源、整理记录与离线维护工具统一放在 `question-bank/`；按知识分类维护唯一题目，禁止在 src/data 留一份副本。公司用 interviews 关联，迁移时复制整个 question-bank 即可。
+
+## iOS 真机安装
+- 参考 swell-note 的内置资源 Release 流程，使用 `npm run ios` 构建、同步、签名、安装并启动到 Swell5；`npm run ios:check` 仅检查入口与设备。
+- 签名团队放在本机忽略文件 `.ios-device.local.json` 或环境变量，不写入工程/仓库；目标手机匹配失败就停止，不自动回退其他设备。

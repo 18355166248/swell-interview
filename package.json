@@ -19,8 +19,10 @@
     "mobile:add:android": "cap add android",
     "mobile:ios": "cap open ios",
     "mobile:android": "cap open android",
-    "curation:check": "python3 .agents/skills/swell-interview-curation/scripts/curate.py --project .",
-    "test:content": "node --test tests/question-examples.test.mjs && python3 -m unittest discover -s tests -p 'test_curation.py'"
+    "curation:check": "python3 question-bank/tools/curate.py --bank question-bank",
+    "test:content": "node --test tests/question-examples.test.mjs && python3 -m unittest discover -s tests -p 'test_curation.py'",
+    "ios": "node scripts/ios-device-run.mjs",
+    "ios:check": "node scripts/ios-device-run.mjs --dry-run"
   },
   "dependencies": {
     "@capacitor/android": "^7.6.0",

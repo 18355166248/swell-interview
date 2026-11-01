@@ -5,9 +5,9 @@ description: 为 swell-interview 持续整理字节、阿里、腾讯等公司�
 
 # 前端面试题整理
 
-项目默认位于 `/Users/xmly/Swell/code/swell-interview`，用户指定新路径时以用户为准。维护实际加载的 `src/data/questions.json` 与 `src/data/interview-sources.json`，不要另建与 App 脱节的题库。本 skill 可重复手动调用；不自行创建定时任务、自动发布或推送。
+项目默认位于 `/Users/xmly/Swell/code/swell-interview`，用户指定新路径时以用户为准。题目、题源、整理记录和离线工具统一在可迁移的 `question-bank/`。按 `manifest.json` 维护 `topics/*/questions.json` 与 `sources/interviews.json`，App 直接加载它们；不按公司复制同一题。迁移时复制整个目录，字段和导出方式见 `question-bank/SCHEMA.md` 与 `question-bank/README.md`。本 skill 可重复手动调用；不自行创建定时任务、自动发布或推送。
 
-开始时查看项目 `AGENTS.md`、Git 状态、现有题目和 `content/curation/` 上次记录。读取 [数据与入库约定](references/schema.md)。用户已有登录牛客浏览器时优先使用该会话；普通公开资料可用浏览器或检索工具，不读取 Cookie 或调用私有接口。对不可访问的内容记录缺口，不把搜索摘要当阅读全文。
+开始时查看项目 `AGENTS.md`、Git 状态、现有题目和 `question-bank/curation/` 上次记录。读取 [数据与入库约定](references/schema.md)。用户已有登录牛客浏览器时优先使用该会话；普通公开资料可用浏览器或检索工具，不读取 Cookie 或调用私有接口。对不可访问的内容记录缺口，不把搜索摘要当阅读全文。
 
 ## 筛选与核验
 
@@ -23,19 +23,21 @@ description: 为 swell-interview 持续整理字节、阿里、腾讯等公司�
 
 相同知识点保留原 ID，追加 interviews、别名和有效追问，避免破坏已有收藏/掌握记录。重复原帖链接去跟踪参数；同一转载链不能当多次独立考察。答案纠错需检查当前代码与参考资料，直接作小范围可审查修改，并在更新记录解释；不要用合并脚本偷偷覆盖答案。
 
-用 JSON 批次保存新增/合并操作及当前题库 SHA-256。默认先检查：
+用 JSON 批次保存新增/合并操作及校验输出的目录组合 baseSha256（包含 manifest、分类文件与来源）。默认先检查：
 
 ```bash
-python3 .agents/skills/swell-interview-curation/scripts/curate.py --project . --batch content/curation/updates/DATE-nowcoder.json
+python3 question-bank/tools/curate.py --bank question-bank --batch question-bank/curation/updates/DATE-nowcoder.json
 ```
 
-看完相似提示，人工确认相同知识点已合并后，在用户授权更新题库的范围内执行同命令加 `--apply`。脚本只做结构校验、重复检查和原子写入，不证明答案正确；若基线变化重新检查，不跳过校验。完成后运行：
+看完相似提示，人工确认相同知识点已合并后，在用户授权更新题库的范围内执行同命令加 `--apply`。脚本只做结构校验、重复检查、逐文件替换与中断恢复，不证明答案正确；若基线变化重新检查，不跳过校验。完成后运行：
 
 ```bash
-python3 .agents/skills/swell-interview-curation/scripts/curate.py --project .
+python3 question-bank/tools/curate.py --bank question-bank
 npm run typecheck
 npm test
 npm run build
 ```
 
 记录当次读取来源、访问日期、新增/合并/修正、跳过理由、版本边界和未决问题；浏览器验证 App 能看到新题及出处。只报告实际完成量，不把待核验候选或来源条数计作新题。无新题时简短说明已检查，无需制造变更。
+
+如需迁移，先在临时目录单独复制 question-bank，运行其中 tools/curate.py 校验并导出 JSON，确认 ID、题数与来源保持一致。导出快照不在源目录维护。异常更新先按工具提示 --recover，不能删除恢复记录后强行继续。历史单文件批次仅作审计，新批次使用目录组合基线。

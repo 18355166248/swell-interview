@@ -1,0 +1,54 @@
+[
+  {
+    "id": "ts-unknown",
+    "topic": "TypeScript",
+    "title": "unknown 与 any 有什么区别？",
+    "difficulty": "基础",
+    "prompt": "处理外部接口返回的未知数据时，为什么更适合使用 unknown？",
+    "answer": [
+      "any 会绕过类型检查，并把不确定性传递到后续操作。unknown 可以接收任意值，但使用前必须先进行类型收窄。",
+      "对外部数据使用 unknown，再通过 typeof、判别字段或运行时校验确认结构，可以保留类型安全边界。"
+    ],
+    "points": [
+      "类型断言不会自动做运行时校验。",
+      "静态类型不能保证服务器实际返回的数据结构。"
+    ],
+    "sources": [
+      {
+        "label": "TypeScript 官方文档 · unknown",
+        "url": "https://www.typescriptlang.org/docs/handbook/2/functions.html#unknown"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "code": "function read(value: unknown) {\n  if (typeof value === 'string') return value.trim();\n  return '';\n}"
+  },
+  {
+    "id": "ts-union",
+    "topic": "TypeScript",
+    "title": "如何用可辨识联合描述请求状态？",
+    "difficulty": "进阶",
+    "prompt": "怎样在成功分支安全访问 data，并避免无意义的字段组合？",
+    "answer": [
+      "使用具有字面量类型的公共字段作为判别标记，让 loading、success、error 各自携带必要字段。",
+      "控制流判断判别字段后，TypeScript 会把联合收窄到对应成员。处理全部分支时可借助 never 检查遗漏。"
+    ],
+    "points": [
+      "将状态和其有效数据放在同一个联合成员中。",
+      "避免用多个互不约束的可选字段表达状态机。"
+    ],
+    "sources": [
+      {
+        "label": "TypeScript 官方文档 · Narrowing",
+        "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "code": "type Result =\n  | { status: 'loading' }\n  | { status: 'success'; data: string[] }\n  | { status: 'error'; message: string };"
+  }
+]

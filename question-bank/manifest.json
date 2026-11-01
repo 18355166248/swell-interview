@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "sources": "sources/interviews.json",
+  "topics": [
+    {
+      "topic": "HTML",
+      "file": "topics/html/questions.json"
+    },
+    {
+      "topic": "CSS",
+      "file": "topics/css/questions.json"
+    },
+    {
+      "topic": "JavaScript",
+      "file": "topics/javascript/questions.json"
+    },
+    {
+      "topic": "React",
+      "file": "topics/react/questions.json"
+    },
+    {
+      "topic": "Vue",
+      "file": "topics/vue/questions.json"
+    },
+    {
+      "topic": "TypeScript",
+      "file": "topics/typescript/questions.json"
+    },
+    {
+      "topic": "工程化",
+      "file": "topics/engineering/questions.json"
+    },
+    {
+      "topic": "网络与浏览器",
+      "file": "topics/network-browser/questions.json"
+    }
+  ]
+}

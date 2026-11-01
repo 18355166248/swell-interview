@@ -1,0 +1,378 @@
+[
+  {
+    "id": "build-treeshaking",
+    "topic": "工程化",
+    "title": "Tree Shaking 生效需要哪些条件？",
+    "difficulty": "进阶",
+    "prompt": "静态模块结构和副作用声明分别起什么作用？",
+    "answer": [
+      "Tree Shaking 利用模块静态结构识别未使用的导出，再由构建优化移除可安全删除的代码。ES Modules 更利于静态分析。",
+      "模块顶层副作用可能使代码必须保留。sideEffects 需要准确声明，不能为了减小体积错误地标记带有必要初始化或样式导入的模块。"
+    ],
+    "points": [
+      "按需导入不等于一定完成 Tree Shaking。",
+      "使用产物分析确认实际减少的模块。",
+      "不要把“原型属性一定无法优化”当规范保证；能否消除取决于静态可分析性、可观察副作用和打包器的具体实现。"
+    ],
+    "sources": [
+      {
+        "label": "webpack 官方文档 · Tree Shaking",
+        "url": "https://webpack.js.org/guides/tree-shaking/"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 43—45 题：Tree Shaking、原型与 sideEffects"
+      }
+    ],
+    "aliases": []
+  },
+  {
+    "id": "build-split",
+    "topic": "工程化",
+    "title": "路由懒加载如何影响首屏性能？",
+    "difficulty": "进阶",
+    "prompt": "动态 import 带来哪些收益和代价？",
+    "answer": [
+      "动态 import 让构建工具把延后使用的功能拆为独立块，减少首屏需要加载与解析的代码。",
+      "拆分也会增加后续请求和加载状态，应围绕路由或真正较重的功能划分边界，并为失败、重试和加载过程提供反馈。"
+    ],
+    "points": [
+      "过度拆分可能增加请求开销。",
+      "结合网络瀑布和产物体积验证收益。"
+    ],
+    "sources": [
+      {
+        "label": "Vite 官方文档 · Async Chunk Loading",
+        "url": "https://vite.dev/guide/features.html#async-chunk-loading-optimization"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "电商项目：全部组件懒加载的负面影响"
+      },
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 14、15 题：动态 import 与 chunk"
+      }
+    ],
+    "aliases": []
+  },
+  {
+    "id": "perf-web-vitals",
+    "canonicalKey": "perf-web-vitals",
+    "topic": "工程化",
+    "title": "如何用 Core Web Vitals 评价并定位页面性能？",
+    "difficulty": "进阶",
+    "prompt": "区分用户体验指标、实验室测量与真实用户数据，并说明优化如何验证。",
+    "answer": [
+      "LCP 衡量加载体验，INP 衡量交互响应，CLS 衡量视觉稳定性。良好阈值分别为 LCP ≤ 2.5 秒、INP ≤ 200 毫秒、CLS ≤ 0.1，通常按真实访问的第 75 百分位评估，并区分移动和桌面。",
+      "先按设备、网络、路由等分组定位，再用性能录制拆分请求等待、主线程长任务、渲染和布局变化。使用同口径前后数据验证，不以单次 Lighthouse 分数代替线上收益。"
+    ],
+    "points": [
+      "FID 已由 INP 取代，不能把旧面经中的指标清单直接当现行 Core Web Vitals。",
+      "优化要说明采样范围与分位数；耗时下降和通过率提升是不同口径。"
+    ],
+    "sources": [
+      {
+        "label": "web.dev · Web Vitals",
+        "url": "https://web.dev/articles/vitals"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "电商项目：性能指标与优化前后对比"
+      },
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 20、21、24 题：性能指标、TTI、长列表"
+      },
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面项目：性能指标"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "perf-fixed-virtual-list",
+    "canonicalKey": "perf-fixed-virtual-list",
+    "topic": "工程化",
+    "title": "固定高度虚拟列表如何计算渲染区间？",
+    "difficulty": "进阶",
+    "prompt": "已知条数 N、行高 h、滚动距离 s、视口高度 v，给出半开区间 [start,end)，解释 overscan。",
+    "answer": [
+      "前提是每行实际高度都等于 h 且 h > 0。先把 s 限制在合法滚动范围，first = floor(s / h)，lastExclusive = ceil((s + v) / h)，再向两侧增加 overscan 并裁到 [0,N]。滚动容器保留 N × h 的总高度，可见内容偏移 start × h。",
+      "overscan 太小会在快速滚动时露白，太大会增加 DOM、布局和绘制成本。不定高列表需要测量高度与前缀和索引，不能直接套固定行高公式；合并单元格还要把跨越可见区的合并关系纳入渲染范围。"
+    ],
+    "points": [
+      "空数据返回 [0,0)；负滚动、滚动到底和末行不足一屏都要测试。",
+      "下面代码仅展示合法固定高度输入下的区间计算，不是生产虚拟列表组件。"
+    ],
+    "sources": [
+      {
+        "label": "web.dev · Virtualize large lists",
+        "url": "https://web.dev/articles/virtualize-long-lists-react-window"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "电商项目：scrollTop、start/end、overscan"
+      },
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 24 题：长列表"
+      },
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 4—7 题：大量数据与合并单元格"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": [],
+    "code": "function range(n, h, s, v, overscan = 2) {\n  if (n === 0) return [0, 0];\n  const top = Math.min(Math.max(0, s), Math.max(0, n * h - v));\n  return [\n    Math.max(0, Math.floor(top / h) - overscan),\n    Math.min(n, Math.ceil((top + v) / h) + overscan)\n  ];\n}"
+  },
+  {
+    "id": "render-csr-ssr",
+    "canonicalKey": "render-csr-ssr",
+    "topic": "工程化",
+    "title": "CSR、SSR 与静态生成如何按业务选择？",
+    "difficulty": "进阶",
+    "prompt": "讨论首屏、搜索可见性、交互、服务成本和 hydration，不只比较名词。",
+    "answer": [
+      "CSR 主要由浏览器下载并执行脚本生成界面，适合交互较重的应用；SSR 在服务端生成首批 HTML，可改善内容到达和抓取体验，但会增加服务器工作、缓存和请求隔离的复杂度。",
+      "页面需要客户端交互时还需加载脚本并 hydration。服务端 HTML 与首次客户端渲染应一致。内容更新不频繁时可评估静态生成；流式 SSR 能逐步发送可用内容，但不保证所有业务的指标自动变好。"
+    ],
+    "points": [
+      "SSR 不意味着没有客户端 JavaScript。",
+      "按 LCP、TTFB、交互可用时间与运维成本验证选择，而非一律 SSR。"
+    ],
+    "sources": [
+      {
+        "label": "React · renderToPipeableStream",
+        "url": "https://react.dev/reference/react-dom/server/renderToPipeableStream"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "电商项目：CSR/SSR 适用场景"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "React 服务端渲染；选型部分为工程权衡"
+    },
+    "aliases": []
+  },
+  {
+    "id": "build-babel-ast",
+    "canonicalKey": "build-babel-ast",
+    "topic": "工程化",
+    "title": "Babel 的解析、转换、生成分别做什么？",
+    "difficulty": "进阶",
+    "prompt": "解释 AST、visitor、source map，以及转语法与补运行时能力的区别。",
+    "answer": [
+      "解析阶段把源码转换成带语法结构的 AST；转换阶段由插件访问、替换或新增节点；生成阶段从结果 AST 输出代码，并可生成 source map。AST 还可用于静态分析、规范检查和代码迁移。",
+      "语法转换与运行时 API 补齐是两件事。把箭头函数转换为普通函数并不自动给环境补上 Promise、Map 等能力；polyfill 和目标环境策略需另外配置，插件顺序与语法版本也会影响结果。"
+    ],
+    "points": [
+      "类型检查并不是 Babel 删除 TypeScript 类型语法时自动完成的。",
+      "举例时明确输入、目标环境和插件配置，避免只背 parse-transform-generate。"
+    ],
+    "sources": [
+      {
+        "label": "Babel · @babel/core",
+        "url": "https://babeljs.io/docs/babel-core"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 15、16、19 题：Babel、插件与 AST"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "hybrid-jsbridge",
+    "canonicalKey": "hybrid-jsbridge",
+    "topic": "工程化",
+    "title": "WebView 中的 JSBridge 如何完成请求与回调？",
+    "difficulty": "进阶",
+    "prompt": "从通道、序列化、请求 ID、权限和生命周期说明 H5 调用原生能力。",
+    "answer": [
+      "桥接机制由宿主向受控页面提供通信通道，消息通常包含方法名、可序列化参数和 requestId；宿主分发到白名单能力，将成功或失败结果带相同 ID 返回，让页面关联 Promise 或回调。",
+      "必须校验消息来源、方法与参数，限制能力范围，处理超时、页面销毁和重复回调。原生登录态不能简单地把长效凭据暴露给任意 H5，应通过明确的可信域、短期凭证或宿主代理协议接入。"
+    ],
+    "points": [
+      "React Native、Android WebView、WKWebView、Electron 的桥接 API 不同，不能互相照搬。",
+      "Electron 应通过 contextIsolation 与窄化的 contextBridge 暴露能力，而不是让渲染页面访问完整 Node API。"
+    ],
+    "sources": [
+      {
+        "label": "Electron · IPC",
+        "url": "https://www.electronjs.org/docs/latest/tutorial/ipc"
+      },
+      {
+        "label": "Electron · contextIsolation",
+        "url": "https://www.electronjs.org/docs/latest/tutorial/context-isolation"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 5—10 题：RN/H5 通信、登录态、Hybrid、JSBridge"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "桥接协议设计思路；Electron 为具体参考，不能推定为 RN 平台 API"
+    },
+    "aliases": []
+  },
+  {
+    "id": "perf-monitoring",
+    "canonicalKey": "perf-monitoring",
+    "topic": "工程化",
+    "title": "如何设计可定位问题的前端监控，而不是只收集报错？",
+    "difficulty": "进阶",
+    "prompt": "涵盖异常、请求、性能、上下文、上报策略和隐私约束。",
+    "answer": [
+      "把脚本异常、未处理 Promise 拒绝、资源失败、请求失败和性能指标分开建模。记录版本、路由、发生时间、脱敏上下文与关联标识；对栈配合匹配版本的 source map，避免只存一条错误消息。",
+      "监听 error 和 unhandledrejection 不能覆盖所有异常：被主动捕获的错误、失败的业务状态码等需在对应边界观测。上报采用采样、聚合和有上限的队列；页面退出阶段可评估 sendBeacon，发送成功不等于服务端已接收入库。"
+    ],
+    "points": [
+      "不要把请求体、Cookie、Token 或个人信息默认写入遥测。",
+      "错误聚合要保留版本及必要上下文，避免把完全不同的问题错误合并。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · error event",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/error_event"
+      },
+      {
+        "label": "MDN · unhandledrejection",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/unhandledrejection_event"
+      },
+      {
+        "label": "MDN · sendBeacon",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里巴巴前端秋招面经（一面挂）",
+      "url": "https://www.nowcoder.com/discuss/400681373596495872"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 13、14 题：前端监控与埋点 SDK"
+      },
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一面项目：前端埋点"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "工程设计建议；采样、数据口径和服务端接收协议按具体业务定义"
+    },
+    "aliases": []
+  },
+  {
+    "id": "render-streaming-markdown",
+    "canonicalKey": "render-streaming-markdown",
+    "topic": "工程化",
+    "title": "流式 Markdown 如何减少重复渲染并保持结构安全？",
+    "difficulty": "进阶",
+    "prompt": "讨论消息状态、块缓冲、渲染节奏、终止和 HTML 清洗。",
+    "answer": [
+      "把已接收原文、已稳定块和仍在形成的尾块分开管理。对连续小片段合并更新，按一帧或有限时间窗刷新界面；停止时 flush 最后缓冲，并用请求 ID 或会话版本丢弃过期流。",
+      "Markdown 代码围栏、列表和表格会被后文改变语义，应采用解析器支持的增量策略，或保留可重解析尾区。没有通用的“遇到一个换行就证明表格完整”规则；原生 HTML 和链接仍需经过可靠清洗与协议限制。"
+    ],
+    "points": [
+      "这是有多种可行实现的场景题，评价依据是正确性、延迟、复杂度和测试覆盖。",
+      "测试取消后迟到数据、代码块未闭合、表格跨 chunk、恶意 HTML 和慢消费者。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Readable Streams",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams"
+      },
+      {
+        "label": "CommonMark · Specification",
+        "url": "https://spec.commonmark.org/0.31.2/"
+      },
+      {
+        "label": "GFM · Tables",
+        "url": "https://github.github.com/gfm/#tables-extension-"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 6.25 腾讯wxg 前端面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/e6fec4c9925d4276a51471f36ede1494"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 9—13 题：流式 Token、Markdown 表格与 HTML"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "工程建议；Markdown 方言和表格扩展需按实际解析器确定"
+    },
+    "aliases": []
+  }
+]

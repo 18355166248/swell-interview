@@ -121,39 +121,122 @@ def similarities(questions):
                 warnings.append({'ids': [a['id'], b['id']], 'similarity': round(score, 2)})
     return warnings
 
+def bank_path(bank, relative):
+    require(isinstance(relative, str) and relative, '分类路径不能为空')
+    path = (bank / relative).resolve()
+    require(path.is_relative_to(bank.resolve()), '分类文件不能引用题库目录之外的路径')
+    return path
+
+def load_bank(bank):
+    bank = bank.resolve()
+    require(not (bank / '.pending-update.json').exists(), '发现未完成批次；先执行 --recover 恢复，不能在部分更新上继续入库')
+    manifest_raw = (bank / 'manifest.json').read_bytes()
+    manifest = json.loads(manifest_raw)
+    require(manifest.get('version') == 1 and isinstance(manifest.get('topics'), list), '题库 manifest 版本/分类无效')
+    snapshot = {'manifest.json': manifest_raw}
+    questions, topics, files = [], set(), set()
+    for item in manifest['topics']:
+        topic, relative = item['topic'], item['file']
+        require(topic in TOPICS and topic not in topics and relative not in files, '分类或分类文件重复/无效')
+        topics.add(topic); files.add(relative)
+        raw = bank_path(bank, relative).read_bytes(); values = json.loads(raw)
+        require(isinstance(values, list) and all(q.get('topic') == topic for q in values), f'{relative}: 题目放错分类')
+        snapshot[relative] = raw; questions.extend(values)
+    require(topics == TOPICS, 'manifest 必须完整列出八个分类')
+    # 漏写 manifest 的题目不能在校验成功后悄悄消失。
+    actual = {p.relative_to(bank).as_posix() for p in (bank / 'topics').glob('*/questions.json')}
+    require(actual == files, '分类文件与 manifest 不一致，请检查漏列或多余文件')
+    relative = manifest['sources']; raw = bank_path(bank, relative).read_bytes()
+    require(relative not in snapshot, '来源路径与分类路径冲突')
+    snapshot[relative] = raw; sources = json.loads(raw)
+    validate(questions, sources)
+    return manifest, questions, sources, snapshot
+
+def fingerprint(snapshot):
+    # 路径和内容均参与摘要，避免不同分类拆分产生相同基线；不依赖操作系统遍历顺序。
+    digest = hashlib.sha256()
+    for relative, raw in sorted(snapshot.items()):
+        digest.update(relative.encode('utf-8') + b'\0' + str(len(raw)).encode() + b'\0' + raw)
+    return digest.hexdigest()
+
+def atomic_write(path, raw):
+    temp = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as handle:
+            temp = Path(handle.name); handle.write(raw); handle.flush(); os.fsync(handle.fileno())
+        os.replace(temp, path)
+    finally:
+        if temp and temp.exists(): temp.unlink()
+
+def recover(bank):
+    journal = bank / '.pending-update.json'
+    require(journal.exists(), '没有需要恢复的批次')
+    records = json.loads(journal.read_text())
+    # 恢复前先核对全部文件；若有人另作修改，拒绝覆盖而保留日志供人工处理。
+    for record in records:
+        current = bank_path(bank, record['file']).read_bytes()
+        require(hashlib.sha256(current).hexdigest() in {record['oldSha256'], record['newSha256']}, f"{record['file']}: 发生外部修改，停止自动恢复")
+    for record in records:
+        atomic_write(bank_path(bank, record['file']), record['oldText'].encode('utf-8'))
+    journal.unlink()
+
+def apply_bank(bank, manifest, result, snapshot):
+    changes = []
+    for item in manifest['topics']:
+        raw = (json.dumps([q for q in result if q['topic'] == item['topic']], ensure_ascii=False, indent=2) + '\n').encode('utf-8')
+        previous = snapshot[item['file']]
+        if raw != previous:
+            changes.append({'file': item['file'], 'oldText': previous.decode('utf-8'), 'oldSha256': hashlib.sha256(previous).hexdigest(), 'newSha256': hashlib.sha256(raw).hexdigest(), 'newRaw': raw})
+    require(all(bank_path(bank, name).read_bytes() == raw for name, raw in snapshot.items()), '写入前题库/来源发生变化，停止')
+    if not changes: return
+    # 多分类文件无法一次 rename。先独占创建恢复日志，再逐文件替换；中断后必须恢复，禁止继续覆盖。
+    journal = bank / '.pending-update.json'
+    with journal.open('x', encoding='utf-8') as handle:
+        json.dump([{k:v for k,v in c.items() if k != 'newRaw'} for c in changes], handle, ensure_ascii=False, indent=2)
+        handle.flush(); os.fsync(handle.fileno())
+    try:
+        require(all(bank_path(bank, name).read_bytes() == raw for name, raw in snapshot.items()), '保存恢复记录后题库发生变化，停止')
+        for change in changes:
+            atomic_write(bank_path(bank, change['file']), change['newRaw'])
+    except Exception:
+        recover(bank)
+        raise
+    journal.unlink()
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--project', type=Path, required=True)
+    parser.add_argument('--bank', type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument('--batch', type=Path)
     parser.add_argument('--apply', action='store_true')
-    args = parser.parse_args()
+    parser.add_argument('--recover', action='store_true')
+    parser.add_argument('--export', dest='export_path', type=Path)
+    args = parser.parse_args(); bank = args.bank.resolve()
     require(not args.apply or args.batch, '--apply 必须指定 --batch')
-    path = args.project.resolve() / 'src/data/questions.json'
-    source_path = args.project.resolve() / 'src/data/interview-sources.json'
-    raw = path.read_bytes(); questions = json.loads(raw); sources = json.loads(source_path.read_text())
-    validate(questions, sources)
+    if args.recover:
+        require(not args.batch and not args.apply and not args.export_path, '--recover 不能与其他写入组合')
+        recover(bank); print('已恢复到批次应用前，请重新核对批次'); return
+    manifest, questions, sources, snapshot = load_bank(bank)
+    baseline = fingerprint(snapshot)
     result, counts = questions, {'added': 0, 'merged': 0}
     if args.batch:
         batch = json.loads(args.batch.read_text())
-        # 在预演和写入之间若有人改过题库，拒绝覆盖；重新生成批次基线后再检查。
-        require(batch.get('baseSha256') == hashlib.sha256(raw).hexdigest(), '题库基线已改变，请重新核对去重与批次，不能直接覆盖')
+        require(batch.get('baseSha256') == baseline, '题库基线已改变，请重新核对去重与批次，不能直接覆盖')
         result, counts = plan(questions, batch, sources)
-    report = {'mode': 'apply' if args.apply else 'check', 'before': len(questions), 'after': len(result), **counts, 'similarityReview': similarities(result)}
+    report = {'mode': 'apply' if args.apply else 'check', 'before': len(questions), 'after': len(result), **counts, 'baseSha256': baseline, 'similarityReview': similarities(result)}
     if args.apply:
-        # 校验全部通过才原子替换单个数据文件；草稿/缺资料题不进入运行时题库。
-        require(path.read_bytes() == raw, '写入前题库发生变化，停止')
-        temp = None
-        try:
-            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=path.parent, delete=False) as handle:
-                temp = Path(handle.name)
-                json.dump(result, handle, ensure_ascii=False, indent=2); handle.write('\n'); handle.flush(); os.fsync(handle.fileno())
-            os.replace(temp, path)
-        finally:
-            if temp and temp.exists(): temp.unlink()
+        apply_bank(bank, manifest, result, snapshot)
+    if args.export_path:
+        require(not args.batch or args.apply, '不导出尚未应用的批次草稿')
+        target = args.export_path.resolve()
+        require(not target.is_relative_to(bank), '导出文件请放到题库目录之外，避免当作第二份源数据维护')
+        target.parent.mkdir(parents=True, exist_ok=True)
+        bundle = {'version': 1, 'topics': [i['topic'] for i in manifest['topics']], 'questions': result, 'interviewSources': sources}
+        atomic_write(target, (json.dumps(bundle, ensure_ascii=False, indent=2) + '\n').encode('utf-8'))
+        report['exported'] = str(target)
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
 if __name__ == '__main__':
     try:
         main()
-    except (ValueError, KeyError, TypeError) as error:
+    except (ValueError, KeyError, TypeError, OSError) as error:
         raise SystemExit(f'校验失败: {error}')

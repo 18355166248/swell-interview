@@ -1,0 +1,253 @@
+[
+  {
+    "id": "react-key",
+    "topic": "React",
+    "title": "React 为什么需要 key？",
+    "difficulty": "基础",
+    "prompt": "如果列表会插入、删除或重新排序，应该如何选择 key？",
+    "answer": [
+      "key 帮助 React 在同级列表中识别同一项，使更新前后的组件和状态正确对应。它应在兄弟节点间唯一，并在数据生命周期内保持稳定。",
+      "优先使用数据自带的稳定 ID。可能重新排序的列表不宜使用数组索引，也不要在渲染时随机生成 key，否则可能重建组件或使输入状态对应错误。"
+    ],
+    "points": [
+      "key 不会作为普通 prop 传给组件，需要业务 ID 时另行传递。",
+      "key 只需要在同级列表中唯一。"
+    ],
+    "sources": [
+      {
+        "label": "React 官方文档 · Rendering Lists",
+        "url": "https://react.dev/learn/rendering-lists"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "code": "items.map(item => <Row key={item.id} item={item} />)"
+  },
+  {
+    "id": "react-effect",
+    "topic": "React",
+    "title": "useEffect 的依赖与清理如何处理？",
+    "difficulty": "进阶",
+    "prompt": "如何同步外部系统？依赖变化或组件卸载时应该做什么？",
+    "answer": [
+      "useEffect 用于把组件与外部系统保持同步，例如事件订阅、定时器和网络连接。依赖应包含 Effect 内使用的响应式值。",
+      "清理函数负责撤销本次建立的资源。依赖改变时先清理旧 Effect 再执行新 setup，组件卸载时也会清理。"
+    ],
+    "points": [
+      "React 用 Object.is 比较依赖；不要为了“只执行一次”而遗漏真实依赖。",
+      "开发环境 StrictMode 会额外执行一次 setup / cleanup，以检查资源建立与释放是否对称。",
+      "异步请求需避免过期结果覆盖新状态，可取消请求或忽略过期响应。",
+      "计数器可使用 setCount(previous => previous + 1) 避免读取定时器闭包中的旧快照；仍需按实际响应式值处理依赖与清理。"
+    ],
+    "sources": [
+      {
+        "label": "React 官方文档 · useEffect",
+        "url": "https://react.dev/reference/react/useEffect"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "code": "useEffect(() => {\n  const id = setInterval(tick, 1000);\n  return () => clearInterval(id);\n}, [tick]);",
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "React 闭包计数与定时器追问"
+      },
+      {
+        "sourceId": "nc-byte-2319e69c",
+        "locator": "八股：useEffect 依赖数组不同情况"
+      },
+      {
+        "sourceId": "nc-ali-2eb00659",
+        "locator": "第 8 题：useEffect 的作用"
+      }
+    ],
+    "aliases": [
+      "定时器里 count 为什么不更新"
+    ]
+  },
+  {
+    "id": "react-memo",
+    "topic": "React",
+    "title": "useMemo 和 useCallback 有什么区别？",
+    "difficulty": "进阶",
+    "prompt": "两者分别缓存什么？什么时候有实际收益？",
+    "answer": [
+      "useMemo 缓存计算结果，useCallback 缓存函数引用。它们都根据依赖是否改变决定是否复用缓存，是性能优化手段。",
+      "昂贵计算、依赖引用稳定性的 memo 子组件或其他 Hook 依赖可能受益。先分析实际渲染成本，避免给简单表达式一律加缓存。"
+    ],
+    "points": [
+      "缓存不能承担程序正确性。",
+      "依赖要完整，否则可能读到旧值。"
+    ],
+    "sources": [
+      {
+        "label": "React 官方文档 · useMemo",
+        "url": "https://react.dev/reference/react/useMemo"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "code": "const visible = useMemo(() => filter(items, query), [items, query]);\nconst onSave = useCallback(() => save(id), [id]);",
+    "interviews": [
+      {
+        "sourceId": "nc-ali-400681373596495872",
+        "locator": "聊天第 34 题：useMemo 与 useCallback"
+      },
+      {
+        "sourceId": "nc-byte-2319e69c",
+        "locator": "八股：useCallback 依赖数组不同情况"
+      }
+    ],
+    "aliases": []
+  },
+  {
+    "id": "react-hooks-rules",
+    "topic": "React",
+    "title": "为什么 useState 等 Hook 不能放在条件分支中调用？",
+    "difficulty": "进阶",
+    "prompt": "如何修复 if 后调用 Hook 或提前 return 后调用 Hook？React 19 的 use 是否完全相同？",
+    "answer": [
+      "useState、useEffect 等 Hook 在函数组件或自定义 Hook 的顶层调用，并且位于可能提前返回的分支之前。每次渲染保持一致的调用顺序，React 才能把 Hook 的状态与对应调用正确关联；事件回调和普通工具函数也不能随意调用它们。",
+      "把条件放入 Effect 内部、用条件值作为参数，或拆出独立组件，避免按条件增减 Hook 调用。React 19 的 use API 有单独规则，可以出现在条件和循环中，不能据此放宽 useState 等 Hook 的规则。"
+    ],
+    "points": [
+      "自定义 Hook 封装的是可复用逻辑，两个调用不会自动共享同一份状态。",
+      "启用 React Hooks lint 规则，依赖数组问题继续参考已有 Effect/memo 题。"
+    ],
+    "sources": [
+      {
+        "label": "React · Rules of Hooks",
+        "url": "https://react.dev/reference/rules/rules-of-hooks"
+      },
+      {
+        "label": "React · use",
+        "url": "https://react.dev/reference/react/use"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节飞书前端日常一面",
+      "url": "https://www.nowcoder.com/feed/main/detail/2319e69c4b9443149b97cbc1c815b3b4"
+    },
+    "canonicalKey": "react-hooks-rules",
+    "aliases": [
+      "Hook 调用顺序",
+      "useState 放在 if 中"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-byte-2319e69c",
+        "locator": "八股：React Hook 的规则"
+      },
+      {
+        "sourceId": "nc-tencent-d3f6b2bb",
+        "locator": "第 10、11 题：Hooks 与 useState 顶层调用"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "React 函数组件；use 的例外限 React 19 API"
+    }
+  },
+  {
+    "id": "react-state-sharing",
+    "topic": "React",
+    "title": "React 兄弟组件与深层组件如何共享状态？",
+    "difficulty": "进阶",
+    "prompt": "什么时候用 props、状态提升、Context，什么时候才考虑外部 store？",
+    "answer": [
+      "单向传 props 与回调保持依赖明确；兄弟组件需要同一状态时，把状态提升到最近共同父组件，由父组件持有唯一数据并传递值与操作。避免多个组件各存一份派生状态再靠 Effect 相互同步。",
+      "Context 适合跨层提供主题、用户等公共数据，不必层层透传；它不会自动替代状态持有者，也不是订阅粒度优化器。共享状态复杂或更新频繁时，再评估外部 store 的选择订阅与持久化需求，保留局部状态就近维护。"
+    ],
+    "points": [
+      "Provider 的 value 变化可能使读取该 Context 的后代重新渲染，按需要拆分 Context 并验证性能。",
+      "跨路由是否保留状态取决于持有者是否仍挂载；组件间通信不自动等于跨标签页同步。"
+    ],
+    "sources": [
+      {
+        "label": "React · Sharing state",
+        "url": "https://react.dev/learn/sharing-state-between-components"
+      },
+      {
+        "label": "React · Context",
+        "url": "https://react.dev/learn/passing-data-deeply-with-context"
+      },
+      {
+        "label": "React · useContext",
+        "url": "https://react.dev/reference/react/useContext"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯前端面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/d3f6b2bb645b4edab5be5254e333a5f6"
+    },
+    "canonicalKey": "react-state-sharing",
+    "aliases": [
+      "兄弟组件通信",
+      "Context 与状态提升"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-d3f6b2bb",
+        "locator": "第 13、15 题：组件通信与远祖组件通信"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "React 函数组件树内共享状态"
+    }
+  },
+  {
+    "id": "next-server-client-boundary",
+    "topic": "React",
+    "title": "Next.js App Router 如何把服务端数据传给 Client Component？",
+    "difficulty": "进阶",
+    "prompt": "use client 是否表示完全不在服务端渲染？可以把数据库密钥或任意函数传过去吗？",
+    "answer": [
+      "App Router 中页面和布局默认是 Server Component，可在服务端访问数据，再以 React 可序列化的 props 交给需要交互的 Client Component。use client 声明客户端模块边界；首次加载时 Client Component 也可能参与服务端预渲染，随后在浏览器 hydration。",
+      "传往客户端的数据要按公开给用户处理，不能传数据库凭证等秘密；普通函数不能当作任意 props 跨边界传递，Server Function 等机制有专门协议。把交互边界下沉，避免将整棵页面及仅供服务端使用的依赖引入客户端模块图。"
+    ],
+    "points": [
+      "React 可序列化值不等同只能 JSON；按所用版本官方规则判断。",
+      "Pages Router 的 getServerSideProps 与 App Router 的 RSC 不是同一个数据加载 API；本题不回答具体版本缓存默认值。"
+    ],
+    "sources": [
+      {
+        "label": "Next.js · Server and Client Components",
+        "url": "https://nextjs.org/docs/app/getting-started/server-and-client-components"
+      },
+      {
+        "label": "React · use client serializable types",
+        "url": "https://react.dev/reference/rsc/use-client#serializable-types-returned-by-server-components"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯前端面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/d3f6b2bb645b4edab5be5254e333a5f6"
+    },
+    "canonicalKey": "next-server-client-boundary",
+    "aliases": [
+      "RSC 数据传递",
+      "use client 服务端预渲染"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-d3f6b2bb",
+        "locator": "第 12、14 题：App/Pages Router 与 Server 数据传递"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "支持 React Server Components 的 Next.js App Router；不泛化到普通 Vite SPA"
+    }
+  }
+]

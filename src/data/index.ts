@@ -1,5 +1,12 @@
-import data from './questions.json';
-import sourceData from './interview-sources.json';
+import manifest from '../../question-bank/manifest.json';
+const topicFiles = import.meta.glob('../../question-bank/topics/*/questions.json', { eager: true, import: 'default' });
+// manifest 明确加载顺序；缺失分类直接报错，避免迁移后静默漏题。
+const data = manifest.topics.flatMap(item => {
+  const values = topicFiles[`../../question-bank/${item.file}`];
+  if (!Array.isArray(values)) throw new Error(`题库分类文件缺失：${item.file}`);
+  return values;
+});
+import sourceData from '../../question-bank/sources/interviews.json';
 import type { Question, InterviewSource } from '../domain/model';
 export const questions = data as Question[];
 export const interviewSources = sourceData as InterviewSource[];

@@ -41,7 +41,7 @@ npm run mobile:ios       # 打开 Xcode 工程
 npm run mobile:android   # 打开 Android Studio 工程
 ```
 
-iOS 原生依赖已完成 pod install；未完成 iOS 安装包构建及真机验收。Android 原生工程与页面资源同步成功，但当前机器没有可用 Java Runtime，尚未编译 Android 安装包。后续需配置 JDK 21 / Android SDK 并在 Android Studio 同步 Gradle。iOS 签名和实际设备验证在后续阶段完成。
+iOS 已完成 Release 真机签名构建，并于 2026-11-01 安装、启动到 Swell5（iPhone 13 Pro Max，iOS 18.6.2）；已核对安装记录、包签名与内置最新题库，完整真机交互仍需实际体验确认。Android 原生工程与页面资源已同步，尚未编译 Android 安装包；当前机器的 JDK / Android SDK 需另行确认。
 
 初期各容器使用各自的 localStorage，Web、Electron、手机之间不会同步记录。卸载或清理应用数据会丢失本机记录；云同步和导入导出尚未实现。
 
@@ -53,7 +53,7 @@ src/
   pages/                  学习、收藏、复习、设置
   components/Answer.tsx   业务答案区，组合 Mantine 原组件
   domain/                 数据协议、掌握状态、复习队列、本机存储
-  data/questions.json     结构化样题及题源、答案参考链接
+  data/index.ts           读取独立 question-bank，提供查询与搜索
 electron/main.cts         隔离的桌面窗口，HTTPS 资料交给系统浏览器
 capacitor.config.ts       iOS / Android 共用构建资源配置
 ios/、android/            原生宿主工程
@@ -64,7 +64,7 @@ docs/design/              选定设计稿、真实截图、视觉对照证据
 
 ## 题库来源与后续整理
 
-初始样题根据公开题单选题；2026-11-01 从 4 篇牛客面经新增 25 题，另补充 8 道旧题的来源或追问。答案为项目内整理说明，每题保留官方文档/规范链接；公司归属为作者自述，非官方认证：
+初始样题根据公开题单选题；2026-11-01 分两批阅读 8 篇牛客面经，当前共 58 题。第一批新增 25 题、合并 8 题，第二批新增 14 题、合并 9 题。答案为项目内整理说明，每题保留官方文档/规范链接；公司归属为作者自述，非官方认证：
 
 - https://github.com/Advanced-Frontend/Daily-Interview-Question
 - https://github.com/sudheerj/javascript-interview-questions
@@ -81,10 +81,18 @@ docs/design/              选定设计稿、真实截图、视觉对照证据
 
 ## 持续整理题库
 
-项目 skill：`.agents/skills/swell-interview-curation/SKILL.md`。可用“使用 $swell-interview-curation 更新前端题库”触发，当前没有定时任务。整理记录与可审查批次在 `content/curation/`。
+项目 skill：`.agents/skills/swell-interview-curation/SKILL.md`。可用“使用 $swell-interview-curation 更新前端题库”触发，当前没有定时任务。整理记录与可审查批次在 `question-bank/curation/`。
 
 - `npm run curation:check`：结构、重复知识点/标题、来源关联与相似题提醒。
 - `npm run test:content`：去重/合并流程和示例边界验证。
 - 脚本不会自动证明答案正确，原帖与技术资料需要人工/agent 逐项核验。
 - 新问题有稳定 canonicalKey；旧问题只补充 interviews、别名或追问，保留 ID 以兼容收藏和掌握记录。
 - App 支持在全局搜索中输入“字节”“阿里”“腾讯”，题目展开后可看面经出处与答案核验范围。
+
+## 题库分类与迁移
+
+题目、原帖来源、整理记录和离线工具统一放在 `question-bank/`，按八个知识分类存储，App 直接读取，src/data 不保存副本。复制整个目录即可迁移；详情见 `question-bank/README.md`。用 `python3 question-bank/tools/curate.py --export /目标路径/interview-bank.json` 可导出跨项目 JSON 快照，维护工具仅依赖 Python 标准库。迁移不包含各容器本机学习记录。
+
+## 一键安装 iOS 真机
+
+`npm run ios` 会构建 Web、同步 Capacitor、签名 Release、安装并启动，资源内置不依赖电脑开发服务；默认目标 Swell5。`npm run ios:check` 仅检查设备与入口。可传 `--device 名称 --team TEAMID`，也可用 SWELL_IOS_DEVICE / APPLE_DEVELOPMENT_TEAM 或本机 `.ios-device.local.json`（device、team）。本机配置不入库。指定设备不可用时会停止，不回退到其他设备。覆盖安装不先卸载应用。

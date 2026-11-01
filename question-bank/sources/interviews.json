@@ -50,5 +50,57 @@
     "evidenceLevel": "author-report",
     "checkedAt": "2026-11-01",
     "note": "已登录 Chrome 中阅读全文。原文未显示年份，不推定年份；流式渲染策略是整理后的工程建议，不是唯一标准答案。"
+  },
+  {
+    "id": "nc-byte-2319e69c",
+    "company": "字节跳动",
+    "title": "字节飞书前端日常一面",
+    "url": "https://www.nowcoder.com/feed/main/detail/2319e69c4b9443149b97cbc1c815b3b4",
+    "author": "狗大牛",
+    "publishedText": "07-30 00:08 已编辑",
+    "publishedAt": null,
+    "role": "飞书/前端/日常实习一面",
+    "evidenceLevel": "author-report",
+    "checkedAt": "2026-11-01",
+    "note": "原帖未显示年份；项目拷打未擅自补为通用标准答案。"
+  },
+  {
+    "id": "nc-ali-2eb00659",
+    "company": "阿里巴巴",
+    "title": "阿里面经前端一面",
+    "url": "https://www.nowcoder.com/feed/main/detail/2eb0065907554372a60daae26ac21fce",
+    "author": "在刷题的螺狮粉很活跃",
+    "publishedText": "2023-03-18 21:18 已编辑",
+    "publishedAt": "2023-03-18",
+    "role": "前端/一面",
+    "evidenceLevel": "author-report",
+    "checkedAt": "2026-11-01",
+    "note": "历史原帖，正文记录面试日期为 2023.2.13；作者主页当前岗位不作为面试岗位依据。"
+  },
+  {
+    "id": "nc-ali-c4b93998",
+    "company": "阿里巴巴",
+    "title": "阿里云前端暑期面经",
+    "url": "https://www.nowcoder.com/feed/main/detail/c4b939986ac44e86afecbf0f6e2dd466",
+    "author": "虎汁",
+    "publishedText": "2025-05-09 04:18",
+    "publishedAt": "2025-05-09",
+    "role": "阿里云/前端/暑期实习",
+    "evidenceLevel": "author-report",
+    "checkedAt": "2026-11-01",
+    "note": "正文记录 4.21 电话面；只使用原帖明确问到的知识点。"
+  },
+  {
+    "id": "nc-tencent-d3f6b2bb",
+    "company": "腾讯",
+    "title": "腾讯前端面经",
+    "url": "https://www.nowcoder.com/feed/main/detail/d3f6b2bb645b4edab5be5254e333a5f6",
+    "author": "波比bopeep",
+    "publishedText": "2025-09-05 10:33",
+    "publishedAt": "2025-09-05",
+    "role": "前端/秋招",
+    "evidenceLevel": "author-report",
+    "checkedAt": "2026-11-01",
+    "note": "Next.js 按 App Router 边界核验，不推定当次面试使用的版本或官方标准答案。"
   }
 ]

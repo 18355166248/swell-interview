@@ -1,0 +1,186 @@
+[
+  {
+    "id": "css-flex",
+    "topic": "CSS",
+    "title": "Flex 布局的主轴与交叉轴如何理解？",
+    "difficulty": "基础",
+    "prompt": "flex-direction、justify-content 和 align-items 分别控制什么？",
+    "answer": [
+      "flex-direction 决定主轴方向，交叉轴与其垂直。justify-content 沿主轴分配剩余空间，align-items 控制项目在交叉轴上的默认对齐。",
+      "项目的大小由 flex-basis、flex-grow、flex-shrink 等共同决定。布局溢出时也要关注默认最小尺寸，必要时给可收缩项目设置 min-width: 0。"
+    ],
+    "points": [
+      "主轴不一定是水平方向。",
+      "多行交叉轴整体分布由 align-content 控制。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Flexbox",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox"
+      }
+    ],
+    "origin": {
+      "label": "Front End Interview Handbook · 选题参考",
+      "url": "https://www.frontendinterviewhandbook.com/"
+    }
+  },
+  {
+    "id": "css-bfc",
+    "topic": "CSS",
+    "title": "什么是 BFC？能解决哪些布局问题？",
+    "difficulty": "进阶",
+    "prompt": "说明块级格式化上下文对浮动、外边距折叠的影响。",
+    "answer": [
+      "BFC 是页面中的一个独立布局环境，其内部布局不会与外部环境直接混合。创建它的方式包括 display: flow-root 等。",
+      "建立 BFC 的容器可以包含内部浮动，隔离内部与外部的外边距折叠。选择创建方式时需要考虑 overflow 裁切等副作用。"
+    ],
+    "points": [
+      "只为包含浮动时，flow-root 的意图通常更明确。",
+      "不是所有相邻外边距都会折叠。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Block formatting context",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Block_formatting_context"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    }
+  },
+  {
+    "id": "css-responsive",
+    "topic": "CSS",
+    "title": "如何实现适配手机与桌面的响应式布局？",
+    "difficulty": "进阶",
+    "prompt": "从布局、断点、图片、字体和验证方式说明；是否必须用 rem 或固定设备宽度？",
+    "answer": [
+      "优先用 Grid/Flex 和相对尺寸构建可伸缩布局，在内容开始拥挤的位置设断点，窄屏可先单列，再逐步增强。移动浏览器配置 viewport 的 width=device-width，避免默认布局视口使断点失效。",
+      "图片限制在容器内；需要不同资源时使用响应式图片。字号采用可缩放的相对单位并检查浏览器放大、长文本和横竖屏。响应式设计是一组适配策略，没有“统一用 rem 就完成适配”的规则。"
+    ],
+    "points": [
+      "媒体查询描述视口或交互能力，容器查询适合按组件容器空间适配。",
+      "断点由内容约束决定，不为每个手机型号维护一套宽度；需要真实窄屏和缩放验证。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Responsive design",
+        "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节飞书前端日常一面",
+      "url": "https://www.nowcoder.com/feed/main/detail/2319e69c4b9443149b97cbc1c815b3b4"
+    },
+    "canonicalKey": "css-responsive",
+    "aliases": [
+      "移动端适配",
+      "媒体查询与弹性布局"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-byte-2319e69c",
+        "locator": "八股：如何实现响应式布局"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器的 Web 布局，不含原生 RN 布局"
+    }
+  },
+  {
+    "id": "css-three-columns",
+    "topic": "CSS",
+    "title": "两侧定宽、中间自适应的三栏布局如何处理溢出？",
+    "difficulty": "进阶",
+    "prompt": "说明 Grid/Flex 的实现思路以及长文本和窄屏时的处理。",
+    "answer": [
+      "先明确 DOM 的阅读顺序与窄屏降级。Grid 可用三条轨道：两侧固定宽度，中间 minmax(0, 1fr)；Flex 可让两侧不收缩，中间 flex: 1 且 min-width: 0。中间能够缩小后，再根据业务设置文本换行或容器滚动。",
+      "当视口放不下侧栏、间隙与内容时，通过断点改为堆叠或收起侧栏，不让固定三栏挤坏正文。浮动与负边距是历史方案，不必为复述技巧放弃现代布局；普通多列排版 columns 也不等于这类独立三栏。"
+    ],
+    "points": [
+      "1fr 默认最小尺寸可能受内容影响；minmax(0, 1fr) 解决的是轨道收缩，不自动解决子内容溢出。",
+      "可视顺序调整不能破坏键盘焦点与语义阅读顺序。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Column layouts",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/How_to/Layout_cookbook/Column_layouts"
+      },
+      {
+        "label": "MDN · minmax",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/minmax"
+      },
+      {
+        "label": "MDN · min-width",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/min-width"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里云前端暑期面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/c4b939986ac44e86afecbf0f6e2dd466"
+    },
+    "canonicalKey": "css-three-columns",
+    "aliases": [
+      "圣杯双飞翼与现代三栏布局"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-ali-c4b93998",
+        "locator": "第 2 题：三栏布局"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代 Grid/Flex；两侧定宽是本题明确化后的场景前提"
+    }
+  },
+  {
+    "id": "css-cascade-conflict",
+    "topic": "CSS",
+    "title": "多个 class 样式冲突时，为什么不能只看选择器权重？",
+    "difficulty": "进阶",
+    "prompt": "如何借助 DevTools 排查规则未生效，避免一直堆 !important？",
+    "answer": [
+      "先确认规则是否匹配且媒体条件成立，再比较来源、重要性及层叠层等优先级；处在同一优先层级时才比较特异性，之后还可能比较作用域接近程度和声明顺序。class 属性中写哪个类在前，不决定哪个样式获胜。",
+      "用 DevTools 的匹配规则和计算样式找到最终值，检查覆盖规则、继承、内联样式与 layer。工程上可用清晰的层叠层和组件作用域降低冲突；CSS Modules 能减少名字碰撞，但不取消浏览器层叠机制。"
+    ],
+    "points": [
+      "普通声明与 !important 声明在 layer 中的优先关系不同，不套用“最后一个 layer 永远赢”。",
+      "特异性不是把 ID、class、标签权重随意换算相加，:where 等伪类也有特殊规则。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Cascade",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Introduction"
+      },
+      {
+        "label": "MDN · Specificity",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 阿里云前端暑期面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/c4b939986ac44e86afecbf0f6e2dd466"
+    },
+    "canonicalKey": "css-cascade-conflict",
+    "aliases": [
+      "CSS 优先级",
+      "样式覆盖与 specificity"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-ali-c4b93998",
+        "locator": "第 11 题：class 冲突怎么解决"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代 CSS 层叠；按规则生效环境排查"
+    }
+  }
+]

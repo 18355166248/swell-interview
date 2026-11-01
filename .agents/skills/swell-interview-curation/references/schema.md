@@ -1,6 +1,6 @@
 # 数据与入库约定
 
-`src/domain/model.ts` 是运行时类型依据。旧题无新元数据也可读取。`src/data/questions.json` 是 App 唯一题目入口，`src/data/interview-sources.json` 是面经来源目录。
+独立协议在 `question-bank/SCHEMA.md`，运行时类型在 `src/domain/model.ts`。题库唯一内容源为 manifest 列出的 `question-bank/topics/*/questions.json`；来源在 `question-bank/sources/interviews.json`。旧题无新元数据也可读取。
 
 题目原有字段必须保持：id、topic、title、difficulty、prompt、answer[]、points[]、sources[{label,url}]、origin{label,url}，code 可选。topic 只使用项目已有分类；需要新分类时先同步 model 和导航。
 
@@ -20,7 +20,7 @@
   "version": 1,
   "id": "DATE-nowcoder",
   "checkedAt": "YYYY-MM-DD",
-  "baseSha256": "当前 questions.json 原始字节的 SHA-256",
+  "baseSha256": "当前分类题库、manifest 与来源目录的组合 SHA-256（curation:check 输出）",
   "changes": [
     { "action": "add", "question": { "id": "完整新增题对象，见已有实际批次" } },
     { "action": "merge", "id": "旧题 ID", "interviews": [], "appendPoints": [], "aliases": [] }
@@ -28,6 +28,6 @@
 }
 ```
 
-查看 `content/curation/updates/2026-11-01-nowcoder.json` 的真实示例，不照搬示意占位对象。合并脚本拒绝 ID/标题/知识点键冲突，拒绝未核验新题或缺失来源，保留全部旧 ID。人工答案纠错直接编辑对应题目并记录，不变更学习状态数据。
+查看 `question-bank/curation/updates/2026-11-01-nowcoder-02.json` 的真实示例，不照搬示意占位对象。合并脚本拒绝 ID/标题/知识点键冲突，拒绝未核验新题或缺失来源，保留全部旧 ID。人工答案纠错直接编辑对应题目并记录，不变更学习状态数据。
 
 建议检查顺序：单帖证据定位 → 资料逐项支持关键断言 → 输入边界 → 语义重复 → 新旧状态兼容 → 脚本预演 → apply → 测试与浏览器验收。内容与脚本都在项目中，可随 Git 版本追踪。

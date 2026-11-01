@@ -1,0 +1,625 @@
+[
+  {
+    "id": "network-cache",
+    "topic": "网络与浏览器",
+    "title": "强缓存与协商缓存如何协作？",
+    "difficulty": "进阶",
+    "prompt": "Cache-Control、ETag 和 304 分别承担什么角色？",
+    "answer": [
+      "缓存内容仍新鲜时可以直接复用，常由 Cache-Control 的 max-age 等指令决定。需要重新验证时可携带 If-None-Match 或 If-Modified-Since。",
+      "服务器验证资源未改变时返回 304，客户端继续使用已有响应体。no-cache 要求复用前验证；no-store 要求不要存储响应。"
+    ],
+    "points": [
+      "no-cache 不等同于禁止存储。",
+      "浏览器缓存与共享缓存应分别考虑。",
+      "带内容哈希的静态资源可长缓存，HTML 通常需要及时更新；具体策略取决于发布和回滚协议，不能仅按扩展名决定。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · HTTP Caching",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一、二面：浏览器缓存与详细缓存"
+      },
+      {
+        "sourceId": "nc-tencent-d3f6b2bb",
+        "locator": "第 7、8 题：HTML/JS 缓存策略和 304"
+      }
+    ],
+    "aliases": []
+  },
+  {
+    "id": "network-cors",
+    "topic": "网络与浏览器",
+    "title": "为什么会出现 CORS 预检请求？",
+    "difficulty": "进阶",
+    "prompt": "哪些请求会触发 OPTIONS？服务端应该如何响应？",
+    "answer": [
+      "CORS 是浏览器对跨源读取的控制机制。不满足简单请求条件的跨源请求，通常先发送 OPTIONS 询问允许的来源、方法及请求头。",
+      "服务端需要按实际策略返回允许信息。携带凭据时不能把 Access-Control-Allow-Origin 设置为通配符，应明确允许来源并正确处理凭据。"
+    ],
+    "points": [
+      "预检由浏览器发起。",
+      "CORS 不是服务端身份认证机制。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · CORS",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS"
+      }
+    ],
+    "origin": {
+      "label": "前端每日一题 · 选题参考",
+      "url": "https://github.com/Advanced-Frontend/Daily-Interview-Question"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一、二面：跨域、简单与复杂请求"
+      },
+      {
+        "sourceId": "nc-ali-c4b93998",
+        "locator": "第 9 题：跨域"
+      },
+      {
+        "sourceId": "nc-tencent-d3f6b2bb",
+        "locator": "第 6 题：CORS 与预检"
+      }
+    ],
+    "aliases": []
+  },
+  {
+    "id": "browser-tab-sync",
+    "canonicalKey": "browser-tab-sync",
+    "topic": "网络与浏览器",
+    "title": "多个标签页如何同步购物车变化？",
+    "difficulty": "进阶",
+    "prompt": "比较 storage 事件与 BroadcastChannel，并说明当前标签页和冲突处理。",
+    "answer": [
+      "同源页面可以监听 localStorage 的 storage 事件感知其他页面的写入，但发起写入的页面不会收到自己的事件，当前页面需直接更新状态。sessionStorage 不用于跨独立标签页广播。",
+      "BroadcastChannel 适合在同源、相同存储分区的上下文之间发送消息，但它不替代持久化或服务端一致性。消息携带资源 ID、版本或更新时间；收到通知后按需重新读取服务端，而不是无条件覆盖本地的新状态。"
+    ],
+    "points": [
+      "同源不代表并发写入自动原子化，读改写存在竞争。",
+      "监听器、channel 在页面或组件退出时释放。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · storage event",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/storage_event"
+      },
+      {
+        "label": "MDN · BroadcastChannel",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "电商项目：A 标签页购物车变更通知其他标签页"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-refresh-singleflight",
+    "canonicalKey": "network-refresh-singleflight",
+    "topic": "网络与浏览器",
+    "title": "多个请求同时返回 401，如何只刷新一次 Token？",
+    "difficulty": "进阶",
+    "prompt": "设计并发合并、过期响应识别、有限重试和刷新失败的处理。",
+    "answer": [
+      "把“是否可刷新”交给真实鉴权协议，不能把所有 401 都视作 Token 过期。在同一客户端实例共享一个 refresh Promise；请求发现自己使用的是旧 Token、而当前 Token 已更新时，直接用当前值重试，避免迟到的 401 再刷新一遍。",
+      "刷新请求绕过普通刷新拦截器；每个原请求最多受控重试一次，成功后重建鉴权信息再发起。失败时所有等待者一同失败并进入明确的重新登录流程。请求取消、无法重放的流式请求体和非幂等写操作需要单独处理。"
+    ],
+    "points": [
+      "Promise 只合并同一运行实例内的刷新；多标签页和多设备需另外协调。",
+      "自动重放写请求需要服务端确认鉴权拒绝前没有业务副作用，或提供幂等协议。"
+    ],
+    "sources": [
+      {
+        "label": "Axios · Interceptors",
+        "url": "https://axios-http.com/docs/interceptors"
+      },
+      {
+        "label": "RFC 9110 · 401 Unauthorized",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html#name-401-unauthorized"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "请求拦截：20 个请求同时返回 401"
+      },
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面：Token 即将过期怎么办"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "客户端协调方案；必须以实际鉴权、刷新与幂等协议为前提"
+    },
+    "aliases": []
+  },
+  {
+    "id": "browser-url-pipeline",
+    "canonicalKey": "browser-url-pipeline",
+    "topic": "网络与浏览器",
+    "title": "输入 URL 到页面可交互，经过哪些关键阶段？",
+    "difficulty": "进阶",
+    "prompt": "串联缓存、连接、文档解析、渲染与脚本，不要求固定串行背诵。",
+    "answer": [
+      "浏览器先处理 URL、导航策略和可用缓存；需要联网时进行域名解析、建立或复用连接，HTTPS 还涉及 TLS，再发送请求并接收响应。缓存命中、连接复用、代理和 Service Worker 都会改变实际路径。",
+      "HTML 解析生成 DOM，CSS 形成样式规则，计算样式后进行布局、绘制及合成。资源下载、增量解析和部分渲染可重叠；脚本可能影响解析和布局。可见并不等于已完成 hydration 或具备良好交互响应。"
+    ],
+    "points": [
+      "HTTP/3 使用 QUIC，不能把所有网络请求都背成 TCP 三次握手。",
+      "用 DevTools 的 Network 和 Performance 验证真实页面瓶颈。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · How browsers work",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/How_browsers_work"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "网络与浏览器：输入 URL 后的完整流程"
+      },
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面：URL 到页面渲染"
+      },
+      {
+        "sourceId": "nc-tencent-d3f6b2bb",
+        "locator": "第 1 题：URL 到浏览器渲染过程"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-tls13",
+    "canonicalKey": "network-tls13",
+    "topic": "网络与浏览器",
+    "title": "HTTPS 的 TLS 1.3 握手如何建立信任和会话密钥？",
+    "difficulty": "进阶",
+    "prompt": "区分身份认证、密钥协商和应用数据加密，并说明与旧式 RSA 描述的区别。",
+    "answer": [
+      "以常见的证书认证 TLS 1.3 为例，客户端与服务端协商版本、算法及密钥份额，用临时密钥交换派生流量密钥。客户端验证证书链、主机名等，并验证服务端对握手上下文的签名；Finished 校验握手完整性。",
+      "应用数据主要由派生出的对称密钥保护。不要描述成“客户端用公钥加密一个固定会话密钥交给服务器”适用于所有版本；TLS 1.3 已去掉旧式 RSA 密钥传输。恢复会话与 0-RTT 还有独立的条件和重放风险。"
+    ],
+    "points": [
+      "TLS 同时解决传输机密性、完整性和服务端身份认证；它不替代业务鉴权。",
+      "协议版本、会话恢复与证书验证失败应分别讨论。"
+    ],
+    "sources": [
+      {
+        "label": "RFC 8446 · TLS 1.3",
+        "url": "https://www.rfc-editor.org/rfc/rfc8446"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 字节前端一面面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/8c4af551338340bb89fda0fff4005994"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-byte-8c4af551",
+        "locator": "网络与浏览器：HTTPS 握手"
+      },
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一、二面：HTTPS 与对称/非对称加密"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "TLS 1.3 常见证书认证路径；不覆盖所有恢复与客户端认证变体"
+    },
+    "aliases": []
+  },
+  {
+    "id": "security-xss",
+    "canonicalKey": "security-xss",
+    "topic": "网络与浏览器",
+    "title": "XSS 在富文本和流式 Markdown 中如何防范？",
+    "difficulty": "进阶",
+    "prompt": "区分文本展示和 HTML 执行上下文，说明框架转义的边界。",
+    "answer": [
+      "XSS 是不可信内容进入可执行上下文。普通文本应走框架转义；需要渲染富文本时，用维护良好的清洗库按允许列表处理 HTML、属性和 URL 协议，再交给 HTML 渲染入口。",
+      "流式内容同样不可信，不能认为“模型生成的 Markdown”就安全。对 Markdown 插件、原生 HTML、链接及增量渲染边界都要审查。CSP 和 Trusted Types 可提供额外防线，但不能代替正确的上下文处理。"
+    ],
+    "points": [
+      "避免对 HTML 字符串使用简单正则删除 script 的做法。",
+      "把内容转成文本与允许受限富文本，是不同产品需求。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · XSS",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/XSS"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一面：XSS"
+      },
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "流式 Markdown 与 HTML 解析追问"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "security-csrf",
+    "canonicalKey": "security-csrf",
+    "topic": "网络与浏览器",
+    "title": "使用 Cookie 登录时，如何防范 CSRF？",
+    "difficulty": "进阶",
+    "prompt": "解释攻击条件、服务端校验与 SameSite 的能力边界。",
+    "answer": [
+      "当浏览器会自动携带目标站点 Cookie 时，恶意页面可能诱导用户浏览器发出状态变更请求。防护需由服务端校验 CSRF Token、Origin/Referer 或合适的 Fetch Metadata 策略，并为 Cookie 配置合理的 SameSite。",
+      "GET 不应承担状态修改。HttpOnly 限制脚本读取 Cookie，但不能阻止浏览器在跨站请求中自动携带它；SameSite 的 site 与同源的 origin 也不同，因此不能认为一个属性就能覆盖所有威胁。"
+    ],
+    "points": [
+      "CORS 主要控制跨源读取，不应作为通用 CSRF 防护的唯一依据。",
+      "存在 XSS 时，很多 CSRF 防护可被同源脚本绕过，需组合防御。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · CSRF",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/CSRF"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一面、二面：CSRF 与详细防护"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "browser-service-worker",
+    "canonicalKey": "browser-service-worker",
+    "topic": "网络与浏览器",
+    "title": "Service Worker 如何缓存资源，更新时要注意什么？",
+    "difficulty": "进阶",
+    "prompt": "说明生命周期、控制范围、缓存策略及旧版本清理。",
+    "answer": [
+      "Service Worker 运行在独立于页面的工作线程，可在控制范围内处理 fetch 等事件，结合 Cache API 实现离线与缓存策略。它需要安全上下文，不能直接操作 DOM。",
+      "安装、等待、激活和控制页面是不同阶段。新 Worker 并非下载完成就立刻接管所有页面；缓存应版本化，并在合适阶段清理旧缓存。skipWaiting 与 clients.claim 会改变更新时机，需要避免旧页面与新资源混用。"
+    ],
+    "points": [
+      "Cache API 与 HTTP 缓存有不同的管理方式。",
+      "登录接口与个性化数据不能无条件长期缓存。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Using Service Workers",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一面：Service Worker"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-http-versions",
+    "canonicalKey": "network-http-versions",
+    "topic": "网络与浏览器",
+    "title": "HTTP/1.1、HTTP/2、HTTP/3 如何影响请求并发？",
+    "difficulty": "进阶",
+    "prompt": "从连接复用、多路复用和队头阻塞比较，避免绝对化结论。",
+    "answer": [
+      "HTTP/1.1 常通过持久连接复用 TCP，浏览器通常还会建立多条连接。HTTP/2 把多个流的帧交错放在同一连接上，减少应用层串行等待，但共享 TCP 丢包仍可能阻塞所有流的数据交付。",
+      "HTTP/3 使用基于 UDP 的 QUIC，通过独立可靠流减少 TCP 层面的跨流队头阻塞，同时集成 TLS。它并不消除所有等待，仍有拥塞、流控、依赖与服务器处理成本；实际收益取决于网络与部署。"
+    ],
+    "points": [
+      "“HTTP/2 完全没有队头阻塞”不准确。",
+      "HTTP 版本不能单独解释所有资源瀑布，需要同时看优先级、缓存与服务端。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Evolution of HTTP",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Evolution_of_HTTP"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面：http1/2/3"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-websocket",
+    "canonicalKey": "network-websocket",
+    "topic": "网络与浏览器",
+    "title": "WebSocket 和 SSE 的选择及断线恢复如何设计？",
+    "difficulty": "进阶",
+    "prompt": "结合方向、鉴权、重连、消息顺序和流控说明取舍。",
+    "answer": [
+      "WebSocket 提供持续的双向消息通道，适合需要客户端与服务器频繁交互的场景。SSE 主要面向服务器向客户端推送文本事件；原生 EventSource 提供重连等行为，但请求方法和鉴权方式有其约束。",
+      "WebSocket 的重连、心跳和业务消息补偿通常需应用设计。使用消息 ID、序列或确认协议处理恢复与去重；检查 bufferedAmount 及消费速度，不能无限堆积。连接建立成功也不意味着某条业务消息已被对方处理。"
+    ],
+    "points": [
+      "原生 WebSocket API 不提供完整的自动背压机制。",
+      "用 wss 与服务端来源/身份校验保护连接；不要把连接状态当成业务成功回执。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · WebSocket",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSocket"
+      },
+      {
+        "label": "MDN · SSE",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "一面项目：WebSocket"
+      },
+      {
+        "sourceId": "nc-byte-2319e69c",
+        "locator": "八股：SSE 和 WebSocket"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-cookie-session",
+    "canonicalKey": "network-cookie-session",
+    "topic": "网络与浏览器",
+    "title": "Cookie、Session 和 Token 分别承担什么职责？",
+    "difficulty": "基础",
+    "prompt": "说明浏览器存储、自动携带、服务端状态，以及常见安全属性。",
+    "answer": [
+      "Cookie 是浏览器按域、路径和安全策略存储并发送的数据机制；Session 通常表示服务端维护的会话状态，浏览器用会话标识与之关联。Token 是凭证的表示方式，可以有不同格式和校验方式，并不天然等于 JWT。",
+      "Secure、HttpOnly、SameSite 分别影响安全传输、脚本可读性和跨站携带。会话过期、撤销、轮换与跨端共享需要服务端协议；把 Token 放到 localStorage 不会自动获得更高安全性。"
+    ],
+    "points": [
+      "不要把 Session 解释为一种与 Cookie 完全互斥的浏览器存储。",
+      "Cookie 的跨域、跨站和路径范围需要分别分析。",
+      "Token 是凭证形式，localStorage/Cookie 是存储或传递机制，不能把它们当作互斥认证协议；XSS/CSRF 风险需分别评估。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · HTTP cookies",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面：Cookie 与 Session"
+      },
+      {
+        "sourceId": "nc-tencent-d3f6b2bb",
+        "locator": "第 18 题：Token/localStorage 与 Cookie 的场景选择"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "现代浏览器；具体实现依实际运行环境调整"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-resumable-upload",
+    "canonicalKey": "network-resumable-upload",
+    "topic": "网络与浏览器",
+    "title": "大文件断点续传如何保证恢复与最终完整性？",
+    "difficulty": "进阶",
+    "prompt": "区分上传偏移协议与自定义并发分片协议，说明重试和服务端职责。",
+    "answer": [
+      "先与服务端建立上传会话，用稳定的上传 ID 关联文件和已接收进度。恢复时向服务端查询已确认偏移或分片状态，再上传缺失部分；不能只相信本机记录。tus 是一种基于偏移查询与校验的协议参考。",
+      "自定义并发分片还需定义块编号、大小、校验、幂等写入和最终合并接口。完成必须以服务端完整性检查和确认结果为准；客户端发送完成、回调完成或进度 100% 都不能单独证明文件已正确保存。"
+    ],
+    "points": [
+      "并发度、过期清理、权限校验与取消上传要明确。",
+      "文件指纹用于关联和校验，不应被当成访问授权凭证。"
+    ],
+    "sources": [
+      {
+        "label": "tus · Resumable upload protocol",
+        "url": "https://tus.io/protocols/resumable-upload"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯WXG前端面经",
+      "url": "https://www.nowcoder.com/discuss/590697274699681792"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-590697274699681792",
+        "locator": "二面项目：断点续传"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "协议设计思路；tus 偏移协议与自定义并发分片不可混为同一实现"
+    },
+    "aliases": []
+  },
+  {
+    "id": "network-sse-parser",
+    "canonicalKey": "network-sse-parser",
+    "topic": "网络与浏览器",
+    "title": "为什么不能把每个 fetch chunk 直接当作一条 SSE 消息？",
+    "difficulty": "进阶",
+    "prompt": "解释字符解码、行/事件边界和 data 字段处理。",
+    "answer": [
+      "网络块与 UTF-8 字符、SSE 行、完整事件没有一一对应关系。使用流式 TextDecoder 保留跨块字符状态，再以缓冲区持续解析行；空行才结束事件，CRLF、LF、CR 都需要按协议处理。",
+      "多个 data 行以换行拼接，注释行忽略，event、id、retry 各有语义。按完整事件的数据字段再做 JSON 解析；接收流结束也不能把一个未按协议完成的片段直接当成功业务消息。"
+    ],
+    "points": [
+      "优先使用成熟解析器；下面提到的是协议检查点，不是可以直接上线的完整解析器。",
+      "测试把多字节字符、换行和 JSON 拆在任意块边界的情况。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Using SSE",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events"
+      },
+      {
+        "label": "WHATWG · Event stream interpretation",
+        "url": "https://html.spec.whatwg.org/multipage/server-sent-events.html#event-stream-interpretation"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 6.25 腾讯wxg 前端面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/e6fec4c9925d4276a51471f36ede1494"
+    },
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-e6fec4c9",
+        "locator": "八股和项目第 9、10 题：SSE 解析与流消费"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "符合 SSE 事件流格式的接口；普通流式 JSON 不是 SSE"
+    },
+    "aliases": []
+  },
+  {
+    "id": "browser-layout-thrashing",
+    "topic": "网络与浏览器",
+    "title": "回流、重绘与强制同步布局如何区分和优化？",
+    "difficulty": "进阶",
+    "prompt": "为什么循环内写 style 后立即读 offsetWidth 可能引起卡顿？",
+    "answer": [
+      "布局计算元素的尺寸和位置，绘制生成可见像素内容，合成把图层结果组合。改变几何尺寸往往涉及布局，颜色变化通常只需重绘；实际浏览器会合并工作，不能把每一次 DOM 修改都等同一次完整回流。",
+      "布局已失效时读取几何信息可能迫使浏览器立刻完成样式和布局。循环中交替写入与读取会产生布局抖动；在业务允许使用同一批测量结果时，先集中读取，再批量写入，并用 Performance 记录验证成本。"
+    ],
+    "points": [
+      "requestAnimationFrame 不是自动消除强制布局的开关，回调内仍可因读写交替触发它。",
+      "transform/opacity 常能减少布局或绘制工作，但不能保证任何页面都获得独立图层或零成本。"
+    ],
+    "sources": [
+      {
+        "label": "web.dev · Avoid layout thrashing",
+        "url": "https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing"
+      },
+      {
+        "label": "MDN · Rendering pipeline",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Animation_performance_and_frame_rate"
+      }
+    ],
+    "origin": {
+      "label": "牛客面经 · 腾讯前端面经",
+      "url": "https://www.nowcoder.com/feed/main/detail/d3f6b2bb645b4edab5be5254e333a5f6"
+    },
+    "canonicalKey": "browser-layout-thrashing",
+    "aliases": [
+      "重排重绘",
+      "强制同步布局"
+    ],
+    "interviews": [
+      {
+        "sourceId": "nc-tencent-d3f6b2bb",
+        "locator": "第 9 题：何时回流与重绘"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-01",
+      "scope": "浏览器布局性能；需要实际 trace 证明收益"
+    }
+  }
+]
