@@ -1,0 +1,86 @@
+tests/test_curation.py
+  s_84c2baa3c9b1fd::t_41df3883c566b8 6-11,63-139
+  s_84c2baa3c9b1fd::t_e93a6320f36777 14,21-22
+  s_84c2baa3c9b1fd::t_c32e27625f6d4d 140
+README.md
+  s_84c2baa3c9b1fd::t_e93a6320f36777 56,84
+  s_84c2baa3c9b1fd::t_42b2bcacb2b291 44
+  s_84c2baa3c9b1fd::t_41df3883c566b8 67,91-94
+  s_84c2baa3c9b1fd::t_e4af158371bb1e 95-98
+question-bank/manifest.json
+  s_84c2baa3c9b1fd::t_e93a6320f36777 1-38
+question-bank/topics/html/questions.json
+  s_84c2baa3c9b1fd::t_e93a6320f36777 1-49,147-149
+  s_84c2baa3c9b1fd::t_41df3883c566b8 50-146
+question-bank/topics/network-browser/questions.json
+  s_84c2baa3c9b1fd::t_41df3883c566b8 14-15,31-34,67-74,200-203,444-447,470-471,487-490,579-623
+  s_84c2baa3c9b1fd::t_e93a6320f36777 1-13,16-30,35-66,75-199,204-443,448-469,472-486,491-578,624-625
+question-bank/curation/updates/2026-11-01-nowcoder-02.json
+  s_84c2baa3c9b1fd::t_abaf78a0ed15ff 1-805
+package.json
+  s_84c2baa3c9b1fd::t_e93a6320f36777 22
+  s_84c2baa3c9b1fd::t_144e82ec47f6fc 23-25
+question-bank/sources/interviews.json
+  s_84c2baa3c9b1fd::t_abaf78a0ed15ff 1-106
+question-bank/README.md
+  s_84c2baa3c9b1fd::t_41df3883c566b8 1-45
+question-bank/SCHEMA.md
+  s_84c2baa3c9b1fd::t_41df3883c566b8 1-25
+AGENTS.md
+  s_84c2baa3c9b1fd::t_e93a6320f36777 25-26
+  s_84c2baa3c9b1fd::t_42b2bcacb2b291 27-30
+question-bank/topics/javascript/questions.json
+  s_84c2baa3c9b1fd::t_e93a6320f36777 1-122,131-323,547-548
+  s_84c2baa3c9b1fd::t_41df3883c566b8 123-130,324-546
+question-bank/topics/engineering/questions.json
+  s_84c2baa3c9b1fd::t_e93a6320f36777 1-378
+question-bank/topics/vue/questions.json
+  s_84c2baa3c9b1fd::t_e93a6320f36777 1-90
+src/data/index.ts
+  s_84c2baa3c9b1fd::t_e93a6320f36777 1-9
+question-bank/curation/2026-11-01-nowcoder-02.md
+  s_84c2baa3c9b1fd::t_41df3883c566b8 1-2,4-60
+  s_84c2baa3c9b1fd::t_133a9690aea8d8 3,61-65
+question-bank/topics/typescript/questions.json
+  s_84c2baa3c9b1fd::t_e93a6320f36777 1-54
+.agents/skills/swell-interview-curation/SKILL.md
+  s_84c2baa3c9b1fd::t_e93a6320f36777 10,29,35
+  s_84c2baa3c9b1fd::t_41df3883c566b8 8,26,32,42-43
+.gitignore
+  s_84c2baa3c9b1fd::t_41df3883c566b8 10-12
+  s_84c2baa3c9b1fd::t_c70bd8372654f6 13-15
+question-bank/topics/react/questions.json
+  s_84c2baa3c9b1fd::t_e93a6320f36777 1-58,67-101,106-108,252-253
+  s_84c2baa3c9b1fd::t_41df3883c566b8 59-66,102-105,109-251
+.agents/skills/swell-interview-curation/references/schema.md
+  s_84c2baa3c9b1fd::t_e93a6320f36777 23
+  s_84c2baa3c9b1fd::t_41df3883c566b8 3,31
+tests/question-examples.test.mjs
+  s_84c2baa3c9b1fd::t_e93a6320f36777 5-7
+  s_84c2baa3c9b1fd::t_41df3883c566b8 29-44
+question-bank/tools/curate.py
+  s_84c2baa3c9b1fd::t_e93a6320f36777 1-242
+question-bank/topics/css/questions.json
+  s_84c2baa3c9b1fd::t_e93a6320f36777 1-50,185-186
+  s_84c2baa3c9b1fd::t_41df3883c566b8 51-184
+scripts/ios-device-run.mjs
+  s_84c2baa3c9b1fd::t_3c25b967b02765 1-73
+tests/ios-device.test.mjs
+  s_84c2baa3c9b1fd::t_bc0eee98d159d8 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "6798537b20a0215563cf5174598411281e2752e0",
+  "prompts": {},
+  "sessions": {
+    "s_84c2baa3c9b1fd": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a194f1-0ed3-7d20-9f9c-7fbad69ca58b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "lang.jiang <lang.jiang@ximalaya.com>"
+    }
+  }
+}
