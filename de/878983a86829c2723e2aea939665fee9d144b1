@@ -1,0 +1,159 @@
+.gitignore
+  s_84c2baa3c9b1fd::t_0a2910cc1f2c1e 1-9
+.npmrc
+  s_84c2baa3c9b1fd::t_91a11aa7ad7f5c 1-2
+.openai/hosting.json
+  s_84c2baa3c9b1fd::t_18e2d3650f96fe 1-4
+AGENTS.md
+  s_84c2baa3c9b1fd::t_70c04ea3ad30fe 1-18
+README.md
+  s_84c2baa3c9b1fd::t_f46bc792a8e66b 1-80
+android/.gitignore
+  s_84c2baa3c9b1fd::t_f644b0121c8186 1-101
+android/app/.gitignore
+  s_84c2baa3c9b1fd::t_82b21ee5a82559 1-2
+android/app/build.gradle
+  s_84c2baa3c9b1fd::t_ab4d6186b2b790 1-54
+android/app/capacitor.build.gradle
+  s_84c2baa3c9b1fd::t_b51aa7f604c40b 1-19
+android/app/proguard-rules.pro
+  s_84c2baa3c9b1fd::t_cceb389d9b4ba7 1-21
+android/app/src/androidTest/java/com/getcapacitor/myapp/ExampleInstrumentedTest.java
+  s_84c2baa3c9b1fd::t_391b94ef6f122e 1-26
+android/app/src/main/AndroidManifest.xml
+  s_84c2baa3c9b1fd::t_c86bc9f7f3b1c1 1-41
+android/app/src/main/java/com/swell/interviewshiguang/MainActivity.java
+  s_84c2baa3c9b1fd::t_279fb99256c44d 1-5
+android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml
+  s_84c2baa3c9b1fd::t_eacf0b43d5c6bf 1-34
+android/app/src/main/res/drawable/ic_launcher_background.xml
+  s_84c2baa3c9b1fd::t_867153a9664050 1-170
+android/app/src/main/res/layout/activity_main.xml
+  s_84c2baa3c9b1fd::t_b1a07745fa348d 1-12
+android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+  s_84c2baa3c9b1fd::t_beace6e0685750 1-5
+android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+  s_84c2baa3c9b1fd::t_a0ad2841812a65 1-5
+android/app/src/main/res/values/ic_launcher_background.xml
+  s_84c2baa3c9b1fd::t_8ba6eba7d91033 1-4
+android/app/src/main/res/values/strings.xml
+  s_84c2baa3c9b1fd::t_e4c15d6f2d244a 1-7
+android/app/src/main/res/values/styles.xml
+  s_84c2baa3c9b1fd::t_1b908d3e512b89 1-22
+android/app/src/main/res/xml/file_paths.xml
+  s_84c2baa3c9b1fd::t_0a249c1c03af6f 1-5
+android/app/src/test/java/com/getcapacitor/myapp/ExampleUnitTest.java
+  s_84c2baa3c9b1fd::t_8cbab08c84de02 1-18
+android/build.gradle
+  s_84c2baa3c9b1fd::t_f6534265a7d558 1-29
+android/capacitor.settings.gradle
+  s_84c2baa3c9b1fd::t_e2a6d4a00bb6bd 1-3
+android/gradle.properties
+  s_84c2baa3c9b1fd::t_14786e99bf1fd6 1-22
+android/gradle/wrapper/gradle-wrapper.properties
+  s_84c2baa3c9b1fd::t_b070efaeb12237 1-7
+android/gradlew
+  s_84c2baa3c9b1fd::t_db556f3d25c86a 1-252
+android/gradlew.bat
+  s_84c2baa3c9b1fd::t_b1ca2023f28b27 1-94
+android/settings.gradle
+  s_84c2baa3c9b1fd::t_129fc7b2ca04a6 1-5
+android/variables.gradle
+  s_84c2baa3c9b1fd::t_ebca128a5124b0 1-16
+capacitor.config.ts
+  s_84c2baa3c9b1fd::t_8e5aab0c191cfb 1-3
+design-qa.md
+  s_84c2baa3c9b1fd::t_ad57dc0151c369 1-56
+docs/architecture.md
+  s_84c2baa3c9b1fd::t_bf6b06a34863fb 1-11
+electron/main.cts
+  s_84c2baa3c9b1fd::t_c260c3e4f3f8c1 1-24
+index.html
+  s_84c2baa3c9b1fd::t_ef68fa1d8bd8a0 1-13
+ios/.gitignore
+  s_84c2baa3c9b1fd::t_367422f1150433 1-13
+ios/App/App.xcodeproj/project.pbxproj
+  s_84c2baa3c9b1fd::t_f07c57103160fa 1-408
+ios/App/App.xcworkspace/contents.xcworkspacedata
+  s_84c2baa3c9b1fd::t_affc79d2236580 1-10
+ios/App/App.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+  s_84c2baa3c9b1fd::t_22e7a208ce31ab 1-8
+ios/App/App/AppDelegate.swift
+  s_84c2baa3c9b1fd::t_0828a26d5ff84c 1-49
+ios/App/App/Assets.xcassets/AppIcon.appiconset/Contents.json
+  s_84c2baa3c9b1fd::t_f922996755267c 1-14
+ios/App/App/Assets.xcassets/Contents.json
+  s_84c2baa3c9b1fd::t_da1f81967d53d6 1-6
+ios/App/App/Assets.xcassets/Splash.imageset/Contents.json
+  s_84c2baa3c9b1fd::t_041726ff998225 1-23
+ios/App/App/Base.lproj/LaunchScreen.storyboard
+  s_84c2baa3c9b1fd::t_85d47189f7e608 1-32
+ios/App/App/Base.lproj/Main.storyboard
+  s_84c2baa3c9b1fd::t_9a5cb3146b0c98 1-19
+ios/App/App/Info.plist
+  s_84c2baa3c9b1fd::t_dcae27f25de07b 1-49
+ios/App/Podfile
+  s_84c2baa3c9b1fd::t_d94902d7403c10 1-24
+ios/App/Podfile.lock
+  s_84c2baa3c9b1fd::t_c99f062307822d 1-22
+package-lock.json
+  s_84c2baa3c9b1fd::t_ebdcfafccb82f0 1-4517
+package.json
+  s_84c2baa3c9b1fd::t_2fb9e8dd252bce 1-50
+scripts/desktop-dev.mjs
+  s_84c2baa3c9b1fd::t_da225f2ceb8e87 1-26
+scripts/electron-smoke.cjs
+  s_84c2baa3c9b1fd::t_e6bd6705d21599 1-25
+scripts/prepare-sites-build.mjs
+  s_84c2baa3c9b1fd::t_359e66baefb533 1-21
+src/App.tsx
+  s_84c2baa3c9b1fd::t_b13392032ddcf5 1-59
+src/components/Answer.tsx
+  s_84c2baa3c9b1fd::t_5dfd20e207cc9b 1-25
+src/data/index.ts
+  s_84c2baa3c9b1fd::t_1c20a7ba746aaf 1-4
+src/data/questions.json
+  s_84c2baa3c9b1fd::t_8671fb2193f3eb 1-486
+src/domain/model.ts
+  s_84c2baa3c9b1fd::t_af1f8ff0dbe8c7 1-44
+src/domain/useStore.ts
+  s_84c2baa3c9b1fd::t_cbf0fbd347f5ba 1-28
+src/main.tsx
+  s_84c2baa3c9b1fd::t_6a5be037728292 1-9
+src/pages/Library.tsx
+  s_84c2baa3c9b1fd::t_d0397bbd2565da 1-48
+src/pages/Review.tsx
+  s_84c2baa3c9b1fd::t_7de16eed2debfe 1-46
+src/pages/Settings.tsx
+  s_84c2baa3c9b1fd::t_4ffb0912b32110 1-16
+src/styles.css
+  s_84c2baa3c9b1fd::t_de8d13946424de 1-60
+tests/sites-worker.test.mjs
+  s_84c2baa3c9b1fd::t_52aed7d0d49348 1-68
+tests/study.test.ts
+  s_84c2baa3c9b1fd::t_e9990d21c267b3 1-33
+tsconfig.electron.json
+  s_84c2baa3c9b1fd::t_0be91a8a18b079 1-16
+tsconfig.json
+  s_84c2baa3c9b1fd::t_2aa7641467f858 1-25
+vite.config.mjs
+  s_84c2baa3c9b1fd::t_b329eeac924144 1-20
+worker/index.js
+  s_84c2baa3c9b1fd::t_a033f3ac2a472f 1-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.1",
+  "base_commit_sha": "de878983a86829c2723e2aea939665fee9d144b1",
+  "prompts": {},
+  "sessions": {
+    "s_84c2baa3c9b1fd": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a194f1-0ed3-7d20-9f9c-7fbad69ca58b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "lang.jiang <lang.jiang@ximalaya.com>"
+    }
+  }
+}
