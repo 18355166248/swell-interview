@@ -12,7 +12,11 @@ function compile() {
 await compile();
 const server = await createServer({ server: { host: '127.0.0.1', port: 5174, strictPort: true } });
 await server.listen();
-const child = spawn(require('electron'), ['.'], { stdio: 'inherit', env: { ...process.env, INTERVIEW_DEV_URL: 'http://127.0.0.1:5174/' } });
+const childEnv = { ...process.env, INTERVIEW_DEV_URL: 'http://127.0.0.1:5174/' };
+// 终端若继承了 ELECTRON_RUN_AS_NODE，Electron 会退化成纯 Node 进程，
+// require('electron') 拿不到 app 模块，这里显式剔除后再拉起窗口。
+delete childEnv.ELECTRON_RUN_AS_NODE;
+const child = spawn(require('electron'), ['.'], { stdio: 'inherit', env: childEnv });
 let closing = false;
 async function close() {
   if (closing) return;

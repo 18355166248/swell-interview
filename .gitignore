@@ -13,3 +13,5 @@ __pycache__/
 
 .ios-device.local.json
 ios/App/build/
+
+.ios-build/

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Badge, Button, Divider, Group, Progress, Stack, Text, Title } from '@mantine/core';
-import { IconArrowLeft, IconArrowRight, IconBookmark, IconBookmarkFilled, IconCheck, IconRefresh } from '@tabler/icons-react';
+import { Button, Group, Progress, Stack, Text, Title } from '@mantine/core';
+import { IconArrowLeft, IconArrowRight, IconCheck, IconRefresh } from '@tabler/icons-react';
 import { questions, getQuestion } from '../data';
 import { createReviewQueue, emptyEntry, type Mastery } from '../domain/model';
 import type { StudyStore } from '../domain/useStore';
@@ -30,17 +30,16 @@ export function Review({ study }: { study: StudyStore }) {
     setRatings(previous => ({ ...previous, [q.id]: value }));
     advance();
   }
-  return <Stack gap="xl" className="review-page">
-    <Text size="sm" c="dimmed">复习 / {favorites ? '我的收藏' : '待复习'}</Text>
-    <Group justify="space-between" align="flex-start"><Stack gap={8}><Title order={1}>{favorites ? '练习收藏' : '复习'}</Title><Text c="dimmed">先回忆，再查看答案。</Text></Stack><Button component={Link} to="/learn/React" variant="default" leftSection={<IconArrowLeft size={16} />}>返回题库</Button></Group>
-    {completed ? <Stack align="center" py={70} gap="lg"><IconCheck size={44} color="var(--mantine-primary-color-filled)" /><Title order={2}>本轮练习完成</Title><Text c="dimmed" ta="center">已自评 {Object.keys(ratings).length} / {queue.length} 题，掌握 {Object.values(ratings).filter(v => v === 'mastered').length} 题。<br />未自评的题目保持原状态。</Text><Group><Button onClick={start} disabled={!available.length} leftSection={<IconRefresh size={16} />}>再练一轮</Button><Button variant="default" component={Link} to="/learn/React">继续学习</Button></Group></Stack>
-    : !q ? <Stack align="center" py={70} gap="lg"><IconRefresh size={40} color="var(--mantine-primary-color-filled)" /><Title order={2}>{available.length ? '准备好，再巩固一次' : favorites ? '还没有收藏的题目' : '暂时没有待复习题目'}</Title><Text c="dimmed" ta="center">{available.length ? `本轮最多练习 ${study.store.settings.reviewSize} 题。查看答案后，再判断掌握程度。` : favorites ? '在题库收藏感兴趣的问题，再来这里练习。' : '学习时标记“还不熟”的题目，会出现在这里。'}</Text>{available.length ? <Button size="md" onClick={start}>开始{favorites ? '练习' : '复习'}（{available.length} 题）</Button> : <Button component={Link} to="/learn/React">去学习题库</Button>}</Stack>
+  return <Stack gap="md" className="review-page">
+    {/* 头部只留标题与返回，进度与题目信息合并到一行 */}
+    <Group justify="space-between" align="center" gap="sm" wrap="wrap"><Group gap={8} align="baseline"><Title order={2} className="page-title">{favorites ? '练习收藏' : '复习'}</Title><Text size="xs" c="dimmed">先回忆，再查看答案</Text></Group><Button size="compact-xs" variant="default" leftSection={<IconArrowLeft size={14} />} component={Link} to="/learn/React">题库</Button></Group>
+    {completed ? <Stack align="center" py={56} gap="md"><IconCheck size={38} color="var(--mantine-primary-color-filled)" /><Title order={3}>本轮完成</Title><Text size="sm" c="dimmed" ta="center">已自评 {Object.keys(ratings).length} / {queue.length} 题，掌握 {Object.values(ratings).filter(v => v === 'mastered').length} 题。未自评的保持原状态。</Text><Group><Button size="compact-sm" onClick={start} disabled={!available.length} leftSection={<IconRefresh size={15} />}>再练一轮</Button><Button size="compact-sm" variant="default" component={Link} to="/learn/React">继续学习</Button></Group></Stack>
+    : !q ? <Stack align="center" py={56} gap="md"><IconRefresh size={34} color="var(--mantine-primary-color-filled)" /><Title order={3}>{available.length ? '准备好，再巩固一次' : favorites ? '还没有收藏的题目' : '暂时没有待复习题目'}</Title><Text size="sm" c="dimmed" ta="center">{available.length ? `本轮最多练习 ${study.store.settings.reviewSize} 题，看过答案再判断掌握程度。` : favorites ? '在题库收藏感兴趣的问题，再来这里练习。' : '学习时标记“还不熟”的题目，会出现在这里。'}</Text>{available.length ? <Button size="compact-sm" onClick={start}>开始{favorites ? '练习' : '复习'}（{available.length} 题）</Button> : <Button size="compact-sm" component={Link} to="/learn/React">去学习题库</Button>}</Stack>
     : <>
-      <Group wrap="nowrap"><Text size="sm" style={{ flexShrink: 0 }}>本轮 {index + 1} / {queue.length}</Text><Progress value={(index + 1) / queue.length * 100} style={{ flex: 1 }} size="sm" aria-label="本轮进度" /></Group><Divider />
-      <Group justify="space-between"><Group gap="xs"><Badge variant="light">{q.topic}</Badge><Badge color="orange" variant="light">{favorites ? '收藏练习' : '待复习'}</Badge></Group><Button variant="default" leftSection={entry.favorite ? <IconBookmarkFilled size={17} /> : <IconBookmark size={17} />} onClick={() => study.toggleFavorite(q.id)}>{entry.favorite ? '已收藏' : '收藏'}</Button></Group>
-      <Title order={2} className="review-question">{q.title}</Title><Text className="answer-text" c="dimmed">{q.prompt}</Text>
-      {revealed ? <Answer question={q} mastery={entry.mastery} onRate={rate} /> : <Stack className="recall-space" justify="end" align="flex-start"><Button size="md" onClick={() => setRevealed(true)}>查看答案</Button><Text size="sm" c="dimmed">先尝试口述，再核对要点。</Text></Stack>}
-      <Group justify="space-between" mt="auto"><Button variant="default" leftSection={<IconArrowLeft size={16} />} disabled={index === 0} onClick={() => { setIndex(i => i - 1); setRevealed(false); }}>上一题</Button><Button variant="subtle" rightSection={<IconArrowRight size={16} />} onClick={advance}>稍后复习</Button></Group>
+      <Group wrap="nowrap" gap="sm"><Text size="xs" c="dimmed" style={{ flexShrink: 0 }}>{index + 1} / {queue.length}</Text><Progress value={(index + 1) / queue.length * 100} style={{ flex: 1 }} size="xs" aria-label="本轮进度" /></Group>
+      <Title order={3} className="review-question">{q.title}</Title><Text className="answer-text" c="dimmed">{q.prompt}</Text>
+      {revealed ? <Answer question={q} entry={entry} onRate={rate} onToggleFavorite={() => study.toggleFavorite(q.id)} /> : <Stack className="recall-space" justify="end" align="flex-start" gap="xs"><Button size="compact-sm" onClick={() => setRevealed(true)}>查看答案</Button><Text size="xs" c="dimmed">先尝试口述，再核对要点。</Text></Stack>}
+      <Group justify="space-between" mt="auto"><Button size="compact-xs" variant="default" leftSection={<IconArrowLeft size={14} />} disabled={index === 0} onClick={() => { setIndex(i => i - 1); setRevealed(false); }}>上一题</Button><Button size="compact-xs" variant="subtle" rightSection={<IconArrowRight size={14} />} onClick={advance}>稍后复习</Button></Group>
     </>}
   </Stack>;
 }

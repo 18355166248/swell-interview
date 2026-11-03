@@ -1,60 +1,266 @@
 :root { color-scheme: var(--mantine-color-scheme); }
 body { margin: 0; }
-.sidebar { background: light-dark(#f8f9fc, #1d1e24); border-color: light-dark(#e9ecf2, #34353d); }
-.brand { padding: 25px 10px 27px; }
-.brand h3 { font-size: 25px; letter-spacing: -0.6px; color: light-dark(#121a2b, #f3f4f8); }
-.search-trigger { width: 100%; height: 43px; color: var(--mantine-color-dimmed); font-weight: 400; }
-.primary-nav { min-height: 45px; padding-inline: 15px; border-radius: var(--mantine-radius-sm); }
-.primary-nav .mantine-NavLink-label { font-size: 16px; }
-.topic-nav { padding: 10px 20px 10px 38px; border-radius: var(--mantine-radius-sm); min-height: 41px; }
-.topic-nav .mantine-NavLink-label { font-size: 15px; }
-.page-content { max-width: 1260px; margin: 0 auto; padding: 34px 40px 48px; }
-h1.mantine-Title-root { font-size: 38px; letter-spacing: -0.7px; line-height: 1.35; }
-.status-filter { width: min(100%, 690px); }
-.status-filter .mantine-SegmentedControl-label { padding: 10px 22px; }
-.difficulty-select { width: 122px; }
-.category-select { width: 150px; }
-.question-accordion .mantine-Accordion-item { background: var(--mantine-color-body); border-color: light-dark(#e5e9f1, #383943); }
-.question-accordion .mantine-Accordion-control { min-height: 58px; }
-.question-accordion > .mantine-Accordion-item[data-active] > .mantine-Accordion-control { background: var(--mantine-primary-color-light); color: light-dark(#121a2b, #f3f4f8); }
-.question-accordion .mantine-Accordion-panel { padding-top: 16px; }
-.question-accordion .mantine-Accordion-content { padding: 10px 26px 24px; }
-.answer-text { font-size: var(--reading-size, 16px); line-height: 1.95; }
-.answer .mantine-List-item { font-size: var(--reading-size, 16px); line-height: 1.8; }
-.code-block { padding: 22px; border-radius: var(--mantine-radius-sm); line-height: 1.85; font-size: calc(var(--reading-size, 16px) - 2px); white-space: pre; overflow-x: auto; background: light-dark(#f5f6fa, #25262e); }
-.review-page { min-height: calc(100dvh - 88px); }
-.review-question { font-size: 29px; line-height: 1.5; }
-.recall-space { min-height: 300px; padding-bottom: 12px; flex-grow: 1; }
-.mobile-header { position: sticky; top: 0; z-index: 90; padding: 12px 16px; padding-top: max(12px, env(safe-area-inset-top)); background: var(--mantine-color-body); border-bottom: 1px solid var(--mantine-color-default-border); }
-.mobile-tabs { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; padding: 7px 10px max(7px, env(safe-area-inset-bottom)); background: var(--mantine-color-body); border-top: 1px solid var(--mantine-color-default-border); }
-.mobile-tab { height: 57px; padding: 4px; }
-@media (max-width: 47.99em) {
-  .page-content { padding: 22px 18px 102px; }
-  h1.mantine-Title-root { font-size: 29px; }
-  .status-filter { width: 100%; }
-  .status-filter .mantine-SegmentedControl-label { padding: 9px 3px; font-size: 13px; }
-  .question-accordion .mantine-Accordion-control { padding-inline: 12px; }
-  .question-accordion .mantine-Accordion-content { padding: 10px 14px 18px; }
-  .question-badge { display: none; }
-  .difficulty-select { width: 104px; }
-  .category-select { width: 107px; }
-  .code-block { padding: 14px; }
-  .review-question { font-size: 24px; }
-  .review-page { min-height: calc(100dvh - 180px); }
-  .recall-space { min-height: 180px; }
-}
-@media (max-width: 47.99em) {
-  /* 操作反馈避开底部导航，保证标记题目后仍能立即切换页面。 */
-  .mantine-Notifications-root { bottom: calc(82px + env(safe-area-inset-bottom)) !important; }
+
+/* ---------- 设计令牌 ----------
+   统一色板、圆角与字阶，避免逐处调参导致界面“拼凑感”。
+   所有前景色都按 WCAG AA（≥4.5:1）挑过，浅色/深色两套同时成立。 */
+:root {
+  --canvas: light-dark(#f7f8fb, #15161b);
+  --surface: light-dark(#ffffff, #1f2028);
+  --surface-sunken: light-dark(#f8f9fc, #20222b);
+  --line: light-dark(#e6e9f0, #2e303a);
+  --line-strong: light-dark(#d8dce6, #3b3e49);
+  --ink-1: light-dark(#101828, #eef0f5);
+  --ink-2: light-dark(#374151, #c9cedb);
+  --ink-3: light-dark(#667085, #98a0b3);
+  --hover: light-dark(#f4f6fa, #262832);
+  --radius-card: 12px;
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-raised: 0 2px 12px rgba(76, 110, 245, 0.08);
 }
 
-.code-block { padding: 0; }
-.code-block .mantine-CodeHighlight-code { font-size: calc(var(--reading-size, 16px) - 1px); line-height: 1.8; }
-.extended-points .mantine-Accordion-control { min-height: 34px; padding: 0; font-size: 14px; }
-.extended-points .mantine-Accordion-label { padding-block: 6px; }
-.extended-points .mantine-Accordion-content { padding: 8px 0; }
+body { background: var(--canvas); color: var(--ink-2); }
+.mantine-Title-root { color: var(--ink-1); font-weight: 600; letter-spacing: -0.2px; }
+:focus-visible { outline: 2px solid var(--mantine-primary-color-5); outline-offset: 2px; }
+
+/* MantineProvider 在运行时注入主题色变量，注入位置在静态样式之后，
+   这里用 :root:root 提权，才能让浅色块统一走主题色淡化版本。 */
+:root:root {
+  --mantine-primary-color-light: color-mix(in srgb, var(--mantine-primary-color-filled) 10%, var(--mantine-color-body));
+  --mantine-primary-color-light-hover: color-mix(in srgb, var(--mantine-primary-color-filled) 16%, var(--mantine-color-body));
+  /* 浅底上的文字用深一档主题色，保证 ≥4.5:1 的对比度（7 档在淡化底上只有 4.39）。 */
+  --mantine-primary-color-light-color: var(--mantine-primary-color-8);
+}
+
+/* 主色系浅底（侧栏选中项、底部 tab、浅色按钮）统一由主题色淡化生成：
+   Mantine 自带的 indigo-1 偏重，且换主题色时不会跟着走。
+   文字用同色系加深/提亮，浅色 4.7~5.5:1、深色 7:1 以上。 */
+.primary-nav[data-active],
+.mobile-tab[data-variant='light'],
+.answer-actions .mantine-Button-root[data-variant='light'],
+.page-head .mantine-Button-root[data-variant='light'],
+.empty-state .mantine-Button-root[data-variant='light'],
+.review-page .mantine-Button-root[data-variant='light'] {
+  background: color-mix(in srgb, var(--mantine-primary-color-filled) 12%, var(--mantine-color-body));
+  color: light-dark(
+    color-mix(in srgb, var(--mantine-primary-color-filled) 78%, black),
+    color-mix(in srgb, var(--mantine-primary-color-filled) 50%, white)
+  );
+}
+.primary-nav[data-active]:hover,
+.mobile-tab[data-variant='light']:hover {
+  background: color-mix(in srgb, var(--mantine-primary-color-filled) 18%, var(--mantine-color-body));
+}
+
+/* ---------- 侧边栏 ---------- */
+.sidebar { background: light-dark(#fbfcfe, #191a20); border-right: 1px solid var(--line); }
+.brand { padding: 18px 8px 14px; }
+.brand h4 { font-size: 17px; letter-spacing: -0.2px; }
+.search-trigger { width: 100%; height: 36px; font-size: 13.5px; font-weight: 400; color: var(--ink-3); border-color: var(--line); background: var(--surface); transition: border-color 0.16s, background-color 0.16s; }
+.search-trigger:hover { border-color: var(--line-strong); background: var(--hover); }
+.primary-nav { min-height: 38px; padding-inline: 12px; border-radius: 9px; margin-bottom: 2px; color: var(--ink-2); transition: background-color 0.16s, color 0.16s; }
+.primary-nav .mantine-NavLink-label { font-size: 14.5px; font-weight: 500; }
+.primary-nav:hover { background: var(--hover); }
+.nav-group { padding-inline: 8px; margin-bottom: 6px; }
+.nav-group .mantine-Text-root { font-size: 11.5px; letter-spacing: 0.04em; color: var(--ink-3); }
+.topic-nav { position: relative; padding: 6px 8px 6px 30px; border-radius: 8px; min-height: 32px; color: var(--ink-2); transition: background-color 0.16s, color 0.16s; }
+.topic-nav .mantine-NavLink-label { font-size: 13.5px; }
+.topic-nav:hover { background: var(--hover); }
+/* 专题项左侧的细引导线，让分组层次不靠加粗字号也能读出来 */
+.topic-nav::before { content: ''; position: absolute; left: 16px; top: 50%; width: 1px; height: 12px; transform: translateY(-50%); background: var(--line-strong); }
+
+/* ---------- 页面骨架 ---------- */
+.page-content { max-width: 880px; margin: 0 auto; padding: 26px 32px 56px; }
+.page-title { font-size: 19px; line-height: 1.3; }
+.page-count { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+/* ---------- 状态筛选：无框下划线 tab ----------
+   之前是「圆角框 + 白色药丸」，在手机上 4 个标签被压进 154px 里、
+   左右内边距只剩 2px，框和药丸叠在一起显得很重。改成贴边的文字 tab，
+   只用颜色 + 2px 下划线表示选中，页面顶部因此更干净。 */
+.status-filter { width: auto; padding: 0; border: 0; border-radius: 0; background: transparent; }
+/* 原生指示块是实心色块，这里不用它，改由激活标签的下划线表达 */
+.status-filter .mantine-SegmentedControl-indicator { display: none; }
+.status-filter .mantine-SegmentedControl-label {
+  flex: 0 0 auto;
+  position: relative;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  transition: color 0.16s, background-color 0.16s;
+}
+.status-filter .mantine-SegmentedControl-label:hover { color: var(--ink-2); background: var(--hover); }
+.status-filter .mantine-SegmentedControl-label[data-active] { color: var(--ink-1); }
+.status-filter .mantine-SegmentedControl-label[data-active]::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--mantine-primary-color-6);
+}
+
+/* ---------- 题目手风琴 ---------- */
+.question-accordion .mantine-Accordion-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: border-color 0.16s, box-shadow 0.16s;
+}
+.question-accordion .mantine-Accordion-item + .mantine-Accordion-item { margin-top: 8px; }
+.question-accordion .mantine-Accordion-control { min-height: 50px; padding: 13px 14px; color: var(--ink-1); }
+.question-accordion .mantine-Accordion-control:hover { background: var(--hover); }
+/* 激活态用左侧主色细条 + 极浅底纹，替代整块主色填充，避免一屏出现大色块 */
+.question-accordion > .mantine-Accordion-item[data-active] {
+  border-color: light-dark(#c7d2fe, #3b4270);
+  box-shadow: inset 3px 0 0 0 var(--mantine-primary-color-6), var(--shadow-raised);
+}
+.question-accordion > .mantine-Accordion-item[data-active] > .mantine-Accordion-control { background: light-dark(#f7f9ff, #232636); }
+.question-accordion > .mantine-Accordion-item[data-active] > .mantine-Accordion-control:hover { background: light-dark(#f1f5ff, #262a3c); }
+.question-accordion .mantine-Accordion-chevron { color: var(--ink-3); }
+.question-accordion .mantine-Accordion-panel { padding-top: 2px; }
+.question-accordion .mantine-Accordion-content { padding: 2px 18px 16px; }
+.question-title { font-size: 15px; font-weight: 500; line-height: 1.55; color: var(--ink-1); }
+.question-accordion > .mantine-Accordion-item[data-active] .question-title { color: light-dark(var(--mantine-primary-color-8), #a5b4fc); }
+.question-badge { font-size: 11px; font-weight: 500; letter-spacing: 0.01em; }
+
+/* ---------- 答案正文 ---------- */
+.answer-text { font-size: var(--reading-size, 16px); line-height: 1.85; color: var(--ink-2); text-wrap: pretty; }
+.answer .mantine-List-item { font-size: var(--reading-size, 16px); line-height: 1.8; color: var(--ink-2); }
+.answer .mantine-List-item::marker { color: var(--mantine-primary-color-5); }
+
+/* 代码块：留白收进内层，外层只做圆角与描边，避免双重内边距 */
+.code-block { padding: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface-sunken); }
+.code-block .mantine-CodeHighlight-code { padding: 14px 16px; font-size: 13.5px; line-height: 1.8; overflow-x: auto; }
+.code-block .mantine-CodeHighlight-control { min-width: 32px; min-height: 32px; }
 .code-block .hljs { background: transparent; color: inherit; }
 [data-mantine-color-scheme='dark'] .code-block .hljs-keyword { color: var(--mantine-color-red-3); }
 [data-mantine-color-scheme='dark'] .code-block .hljs-title { color: var(--mantine-color-violet-3); }
 [data-mantine-color-scheme='dark'] .code-block .hljs-number { color: var(--mantine-color-blue-3); }
 [data-mantine-color-scheme='dark'] .code-block .hljs-string { color: var(--mantine-color-teal-3); }
+
+/* 折叠的附加信息：压成单行，读正文时几乎不占视觉重量。
+   选择器比 .question-accordion 那条多一级，避免被题目行高度规则覆盖；
+   Mantine 给折叠标题加了 12px 上下内边距，这里一并收紧。 */
+.answer .answer-extras { margin-top: 2px; border-top: 1px solid var(--line); }
+.answer .answer-extras .mantine-Accordion-item { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
+.answer .answer-extras .mantine-Accordion-item:last-child { border-bottom: 0; }
+.answer .answer-extras .mantine-Accordion-control { min-height: 32px; padding: 2px 2px; }
+.answer .answer-extras .mantine-Accordion-control:hover { background: transparent; }
+.answer .answer-extras .mantine-Accordion-control:hover .mantine-Accordion-label { color: var(--mantine-primary-color-8); }
+.answer .answer-extras .mantine-Accordion-label { padding-block: 2px; font-size: 12.5px; font-weight: 500; color: var(--ink-3); }
+.answer .answer-extras .mantine-Accordion-content { padding: 4px 2px 10px; }
+
+/* 收藏与自评合并为一行操作，用上边框和正文分开 */
+.answer-actions { margin-top: 2px; padding-top: 12px; border-top: 1px solid var(--line); }
+.answer-actions .mantine-Button-root { min-height: 32px; font-size: 13px; border-radius: 8px; }
+
+/* ---------- 空状态 ---------- */
+.empty-state { padding: 56px 16px; }
+.empty-state .mantine-ThemeIcon-root { background: var(--surface-sunken); border: 1px solid var(--line); color: var(--ink-3); }
+
+/* ---------- 上一题 / 下一题 ---------- */
+.question-pager .mantine-Button-root { min-height: 32px; font-size: 12.5px; border-radius: 8px; }
+.question-pager .mantine-Text-root { font-variant-numeric: tabular-nums; }
+
+/* ---------- 复习 ---------- */
+.review-page { min-height: calc(100dvh - 72px); }
+.review-question { font-size: 22px; line-height: 1.45; }
+.recall-space { min-height: 260px; padding-bottom: 8px; flex-grow: 1; }
+
+/* ---------- 设置 ---------- */
+.settings-row { min-height: 56px; padding-block: 12px; border-bottom: 1px solid var(--line); }
+.settings-row:last-of-type { border-bottom: 0; }
+.settings-row .mantine-Text-root { font-size: 14px; font-weight: 500; color: var(--ink-1); }
+.settings-row .mantine-SegmentedControl-label { font-size: 12.5px; }
+.settings-note { padding-top: 16px; }
+
+/* ---------- 安全区适配 ----------
+   WKWebView 在 viewport-fit=cover 下会铺满整屏，env() 才是真实安全区。
+   头部与底部 tab 已经带 inset，抽屉浮层原来从 y=0 开始，会把标题压在灵动岛下面。 */
+.mantine-Drawer-content { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+
+/* ---------- 移动端 ---------- */
+.mobile-header {
+  position: sticky; top: 0; z-index: 90;
+  padding: 9px 12px; padding-top: max(9px, env(safe-area-inset-top));
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.mobile-header .mantine-ActionIcon-root { color: var(--ink-3); }
+.mobile-tabs {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  padding: 6px 8px max(6px, env(safe-area-inset-bottom));
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+}
+.mobile-tab { height: 50px; padding: 2px; border-radius: 10px; }
+.mobile-tab .mantine-Text-root { font-size: 11px; letter-spacing: 0.01em; }
+
+@media (max-width: 47.99em) {
+  .page-content { padding: 14px 14px calc(76px + env(safe-area-inset-bottom)); }
+  .page-title { font-size: 18px; }
+  .status-filter { width: auto; }
+  /* 手机上标签等宽铺开，下划线随内容走，不再挤成 2px 内边距 */
+  .status-filter .mantine-SegmentedControl-label { flex: 1 1 auto; padding: 7px 8px; font-size: 12.5px; }
+  .question-accordion .mantine-Accordion-control { min-height: 52px; padding: 12px 12px; }
+  .question-accordion .mantine-Accordion-content { padding: 2px 14px 16px; }
+  .question-title { font-size: 14.5px; }
+  .answer-actions .mantine-Button-root { min-height: 34px; }
+  .review-question { font-size: 19px; }
+  .review-page { min-height: calc(100dvh - 150px); }
+  .recall-space { min-height: 160px; }
+  .question-badge { display: none; }
+  .settings-row { min-height: 52px; }
+  /* 移动端次要控件也保证最小触控高度，避免“能看到但点不准” */
+  .mantine-SegmentedControl-label { min-height: 34px; display: flex; align-items: center; justify-content: center; }
+  .review-page .mantine-Button-root { min-height: 34px; }
+  .mobile-header .mantine-ActionIcon-root { width: 36px; height: 34px; }
+  .page-head .mantine-Button-root,
+  .empty-state .mantine-Button-root { min-height: 34px; }
+  .favorites-filters .mantine-Input-input { min-height: 34px; }
+  .code-block .mantine-CodeHighlight-control { min-width: 34px; min-height: 34px; }
+  .mantine-NativeSelect-input { min-height: 34px; }
+  .question-pager .mantine-Button-root { min-height: 34px; }
+}
+
+/* ---------- 触控适配 ----------
+   平板与触屏笔电走的是桌面布局，光靠宽度断点覆盖不到，
+   这里按指针类型统一抬高可点区域，避免“看着能点却点不准”。 */
+@media (pointer: coarse) {
+  .answer-actions .mantine-Button-root,
+  .question-pager .mantine-Button-root,
+  .page-head .mantine-Button-root,
+  .empty-state .mantine-Button-root,
+  .review-page .mantine-Button-root,
+  .mantine-SegmentedControl-label,
+  .mantine-NativeSelect-input,
+  .favorites-filters .mantine-Input-input { min-height: 36px; }
+  .code-block .mantine-CodeHighlight-control { min-width: 36px; min-height: 36px; }
+}
+
+/* ---------- 交互健壮性 ---------- */
+/* 通知容器铺满定位区域时不拦截页面点击，仅通知卡片本身可交互。
+   Mantine v9 会同时渲染 top 与 bottom 共六个定位容器，任一空容器都不能吞掉页面点击。 */
+.mantine-Notifications-root { pointer-events: none; }
+.mantine-Notifications-root > * { pointer-events: auto; }
+@media (max-width: 47.99em) {
+  /* 操作反馈避开底部导航，保证标记题目后仍能立即切换页面。
+     仅调整 bottom 定位的容器：若给 top-* 容器追加 bottom，会因 top/bottom 同时存在而
+     把空容器拉伸成整屏高度，导致页面内容整体点击失效（iOS 手机端点击无响应）。 */
+  .mantine-Notifications-root[data-position^='bottom'] { bottom: calc(82px + env(safe-area-inset-bottom)) !important; }
+}
+/* 输入框左侧图标是纯装饰，不应截获点击：点在图标上同样聚焦输入框（右侧操作按钮不受影响）。 */
+.mantine-Input-section[data-position='left'] { pointer-events: none; }
+@media (max-width: 22.5em) {
+  /* 超窄屏（不超过 360px）筛选行换行：搜索框独占一行，避免被两个下拉挤压到几乎无法点击。 */
+  .favorites-filters { flex-wrap: wrap !important; }
+  /* 组件内联了 flex:1，这里需要提权才能独占整行。 */
+  .favorites-filters > :first-child { flex-basis: 100% !important; }
+}

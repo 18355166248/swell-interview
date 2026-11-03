@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -16,10 +16,14 @@ function capture(command, args) {
   if (result.error || result.status !== 0) throw new Error(`${command} 执行失败：${result.stderr?.trim() || result.error?.message || result.status}`);
   return result.stdout;
 }
-function run(command, args, failure) {
-  const result = spawnSync(command, args, { cwd: projectRoot, stdio: 'inherit' });
+function run(command, args, failure, env) {
+  const result = spawnSync(command, args, { cwd: projectRoot, stdio: 'inherit', env: env ?? process.env });
   if (result.error || result.status !== 0) throw new Error(failure);
 }
+// Capacitor 的 pod install 走 CocoaPods（Ruby），在 locale 为空的 shell 里
+// Encoding.default_external 会退化成 US-ASCII，对路径做 unicode_normalize 时直接抛
+// Encoding::CompatibilityError。这里给子进程显式补 UTF-8，避免依赖用户改 ~/.profile。
+const utf8Env = { ...process.env, LANG: 'en_US.UTF-8', LC_ALL: 'en_US.UTF-8' };
 export function selectDevice(devices, target) {
   // 指定设备未连接时必须停止，不能回退到唯一的其他手机，避免装错测试机。
   const matched = devices.filter(d => !d.simulator && d.available && String(d.platform).includes('iphoneos')
@@ -41,12 +45,18 @@ function main() {
   if (process.argv.includes('--dry-run')) { console.log('✓ 设备与构建入口检查通过'); return; }
 
   console.log('\n[1/4] 构建 Web 并同步 iOS 资源…');
+  // Capacitor 的 pod install 会先执行 xcodebuild clean，而 clean 只删除由构建系统创建的
+  // ios/App/build；工程里遗留的历史构建目录会让 clean 直接失败并中断同步，所以先清掉。
+  const staleBuildDir = resolve(projectRoot, 'ios/App/build');
+  if (existsSync(staleBuildDir)) rmSync(staleBuildDir, { recursive: true, force: true });
   run('npm', ['run', 'build'], 'Web 构建失败，未执行安装。');
-  run(process.execPath, ['node_modules/@capacitor/cli/bin/capacitor', 'sync', 'ios'], 'Capacitor iOS 同步失败，未执行安装。');
+  run(process.execPath, ['node_modules/@capacitor/cli/bin/capacitor', 'sync', 'ios'], 'Capacitor iOS 同步失败，未执行安装。', utf8Env);
   const synced = JSON.parse(readFileSync(resolve(projectRoot, 'ios/App/App/capacitor.config.json'), 'utf8'));
   // 安装包必须独立启动；误带 live-reload URL 时拒绝构建，不让手机依赖开发机。
   if (synced.server?.url) throw new Error('iOS 配置仍带开发服务 URL，请移除后重新安装。');
-  const derivedData = resolve(projectRoot, 'ios/App/build/device');
+  // 派生数据放在工程根目录的 .ios-build 下：既不在 ios/App/build（xcodebuild clean 的删除目标，
+  // 会因“不是构建系统创建”而中断同步），也不写到工程外，保证本机与沙箱环境下都能构建。
+  const derivedData = resolve(projectRoot, '.ios-build/device');
   console.log('\n[2/4] 构建并签名 iOS Release…');
   // 签名团队与构建号仅通过命令行传入，不修改工程文件或把个人团队写进仓库。
   run('xcodebuild', ['-workspace', 'ios/App/App.xcworkspace', '-scheme', 'App', '-configuration', 'Release',
