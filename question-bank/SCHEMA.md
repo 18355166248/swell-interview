@@ -7,7 +7,7 @@
 | 字段 | 含义 |
 |---|---|
 | id | 稳定的小写英文/数字/连字符 ID，收藏和学习状态的关联键 |
-| topic | HTML、CSS、JavaScript、React、Vue、TypeScript、工程化、网络与浏览器之一 |
+| topic | HTML、CSS、JavaScript、React、Vue、TypeScript、工程化、网络与浏览器、Agent 工程之一 |
 | title / prompt | 简明题名 / 明确场景与前提的问题 |
 | difficulty | 基础或进阶 |
 | answer / points | 非空字符串数组：核心答案 / 延伸边界与追问 |

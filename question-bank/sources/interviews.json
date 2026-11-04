@@ -102,5 +102,18 @@
     "evidenceLevel": "author-report",
     "checkedAt": "2026-11-01",
     "note": "Next.js 按 App Router 边界核验，不推定当次面试使用的版本或官方标准答案。"
+  },
+  {
+    "id": "user-agent-round2",
+    "company": "未标注",
+    "title": "用户提供的 Agent 工程二面面经",
+    "url": "https://example.com/interview-shiguang/user-provided-agent-round2",
+    "author": "用户本人提供",
+    "publishedText": "2026-11-04 用户提供",
+    "publishedAt": null,
+    "role": "Agent / 大模型应用工程",
+    "evidenceLevel": "author-report",
+    "checkedAt": "2026-11-04",
+    "note": "用户口述转录的二面记录，未提供公开原帖链接；url 是占位地址（example.com 为保留域名），不代表真实页面。公司与面试时间均未标注，不据此推断考察频率。"
   }
 ]

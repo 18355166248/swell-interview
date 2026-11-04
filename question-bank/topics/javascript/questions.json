@@ -544,5 +544,54 @@
       "checkedAt": "2026-11-01",
       "scope": "普通数据克隆与 structuredClone 支持域；不提供全类型 polyfill"
     }
+  },
+  {
+    "id": "js-json-list-to-tree",
+    "topic": "JavaScript",
+    "title": "把带 parent_id 的扁平列表还原成树，手写实现",
+    "difficulty": "基础",
+    "prompt": "输入是 `[{id, parent_id, ...}]`，可能乱序、parent_id 可能为 null 或缺失、可能有孤儿节点甚至环。返回根节点数组，说明复杂度、边界处理与不修改输入的做法。",
+    "answer": [
+      "标准解法是两趟 O(n)：第一趟建立 `Map<id, node>`，为每个节点克隆出 `children: []`；第二趟按原列表顺序把节点挂到父节点上，parent 为空或不存在的作为根或孤儿收集。用 Map 而不是对象，避免 id 为 `__proto__` 这类原型污染问题；克隆节点保证不修改调用方传入的对象。",
+      "边界是关键：**环**（a 的父是 b、b 的父是 a）在两趟法下不会进入 roots 也不会进入 orphans，会整棵「消失」，必须显式检测——可在挂接后统计可达节点数，或用三色标记 DFS 找 back edge 并把成环节点单独返回；**重复 id** 会让 Map 覆盖丢节点，应先校验；**深链**用递归会爆栈（十万级），迭代遍历更稳。",
+      "若要求稳定排序，就按输入顺序推进（Map 保持插入序）；若要求按自定义字段排序，在每个 children 数组上再排一次。时间复杂度 O(n)、空间 O(n)，额外开销来自节点克隆。"
+    ],
+    "code": "function listToTree(list, { idKey = 'id', parentKey = 'parent_id' } = {}) {\n  const nodes = new Map();\n  for (const item of list) {\n    if (nodes.has(item[idKey])) throw new Error(`重复 id: ${item[idKey]}`);\n    nodes.set(item[idKey], { ...item, children: [] });\n  }\n  const roots = [];\n  const orphans = [];\n  for (const item of list) {\n    const node = nodes.get(item[idKey]);\n    const parentId = item[parentKey];\n    if (parentId === null || parentId === undefined) { roots.push(node); continue; }\n    const parent = nodes.get(parentId);\n    if (parent) parent.children.push(node);\n    else orphans.push(node); // 父节点缺失\n  }\n  // 环检测：从 roots 出发的 DFS 覆盖不到、又不属于孤儿的节点即为环的一部分\n  const seen = new Set();\n  const stack = [...roots];\n  while (stack.length) {\n    const node = stack.pop();\n    if (seen.has(node[idKey])) continue;\n    seen.add(node[idKey]);\n    stack.push(...node.children);\n  }\n  const cyclic = [...nodes.values()].filter(n => !seen.has(n[idKey]) && !orphans.includes(n));\n  return { roots, orphans, cyclic };\n}",
+    "points": [
+      "只看「父节点是否存在」不够：环会让整棵子树静默消失，必须显式检测并单独返回。",
+      "深链用迭代遍历，递归在十万级节点会栈溢出。",
+      "节点克隆会让内存翻倍，超大列表要考虑原地标注或流式构造。"
+    ],
+    "sources": [
+      {
+        "label": "MDN · Map",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map"
+      },
+      {
+        "label": "MDN · Array.prototype.map",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map"
+      }
+    ],
+    "origin": {
+      "label": "用户提供 · Agent 工程二面口述（未标注公司与原帖）",
+      "url": "https://example.com/interview-shiguang/user-provided-agent-round2"
+    },
+    "canonicalKey": "js-json-list-to-tree",
+    "aliases": [
+      "扁平数组转树",
+      "parent_id 转树形结构",
+      "列表还原成树"
+    ],
+    "interviews": [
+      {
+        "sourceId": "user-agent-round2",
+        "locator": "第 18 题：手撕算法，扁平 JSON 列表按 parent_id 还原成树"
+      }
+    ],
+    "review": {
+      "status": "verified",
+      "checkedAt": "2026-11-04",
+      "scope": "教学实现：稠密数组、单根或森林、允许孤儿与环；不处理超大流式输入"
+    }
   }
 ]

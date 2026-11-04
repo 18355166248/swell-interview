@@ -2,6 +2,7 @@ export const topics = [
   { group: '前端基础', items: ['HTML', 'CSS', 'JavaScript'] },
   { group: '框架', items: ['React', 'Vue'] },
   { group: '工程与网络', items: ['TypeScript', '工程化', '网络与浏览器'] },
+  { group: 'AI Agent', items: ['Agent 工程'] },
 ] as const;
 export type Topic = (typeof topics)[number]['items'][number];
 export type Mastery = 'unseen' | 'review' | 'mastered';

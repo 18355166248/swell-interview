@@ -12,7 +12,7 @@ import unicodedata
 from urllib.parse import urlsplit, urlunsplit
 from difflib import SequenceMatcher
 
-TOPICS = {'HTML', 'CSS', 'JavaScript', 'React', 'Vue', 'TypeScript', '工程化', '网络与浏览器'}
+TOPICS = {'HTML', 'CSS', 'JavaScript', 'React', 'Vue', 'TypeScript', '工程化', '网络与浏览器', 'Agent 工程'}
 
 def normalized(text):
     return ''.join(c for c in unicodedata.normalize('NFKC', text).casefold() if c.isalnum())
@@ -142,7 +142,7 @@ def load_bank(bank):
         raw = bank_path(bank, relative).read_bytes(); values = json.loads(raw)
         require(isinstance(values, list) and all(q.get('topic') == topic for q in values), f'{relative}: 题目放错分类')
         snapshot[relative] = raw; questions.extend(values)
-    require(topics == TOPICS, 'manifest 必须完整列出八个分类')
+    require(topics == TOPICS, 'manifest 必须完整列出全部分类')
     # 漏写 manifest 的题目不能在校验成功后悄悄消失。
     actual = {p.relative_to(bank).as_posix() for p in (bank / 'topics').glob('*/questions.json')}
     require(actual == files, '分类文件与 manifest 不一致，请检查漏列或多余文件')

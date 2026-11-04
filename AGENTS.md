@@ -31,6 +31,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - 当前不创建定时更新任务，用户只要求先做好可复用 skill。
 - 入库先跑 `npm run curation:check`，缺少核验的候选保留在当次整理记录，不进入 App 题库。
 
+- 题库分类为 HTML、CSS、JavaScript、React、Vue、TypeScript、工程化、网络与浏览器、Agent 工程；新增分类要同时改 manifest、`curate.py` 的 TOPICS、SCHEMA.md 与 `src/domain/model.ts` 的分组，四处缺一不可。
 - 面试题、题源、整理记录与离线维护工具统一放在 `question-bank/`；按知识分类维护唯一题目，禁止在 src/data 留一份副本。公司用 interviews 关联，迁移时复制整个 question-bank 即可。
 
 ## iOS 真机安装

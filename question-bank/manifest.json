@@ -33,6 +33,10 @@
     {
       "topic": "网络与浏览器",
       "file": "topics/network-browser/questions.json"
+    },
+    {
+      "topic": "Agent 工程",
+      "file": "topics/agent/questions.json"
     }
   ]
 }
